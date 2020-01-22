@@ -1,64 +1,113 @@
 'use strict';
 
-class Model 
-{
+class Model {
     constructor() {
-        this.matrix = [
-            [0,0,0],
-            [0,0,0],
-            [0,0,0]
+        // start symbol
+        this.symbol = 'X';
+
+        this.board = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
         ];
 
-        function getRow(row) {
-            if(row > 2 || row < 0) {
-                console.log('${row} : Not a valid row. Valid rows are in range 0 to 2');
-                return [];
-            }
-    
-            return this.matrix[row];
-        }
-
-        function getColumn(column) {
-            if(column > 2 || column < 0) {
-                console.log('${column} : Not a valid Column. Valid columns are in range 0 to 2');
-                return [];
-            }
-    
-            let column = [];
-            for (let rowIndex = 0; rowIndex <= 2 ; rowIndex++) {
-                const row = this.matrix[rowIndex];
-
-                for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
-                    if(columnIndex == column) column.push(row[columnIndex]);
-                }
-            }
-            return column;
-        }
+        this.cellAdjacencyMatrix = [
+            [   // cell 0            
+                [0, 1, 2],
+                [0, 4, 7],
+                [0, 3, 6]
+            ],
+            [   // cell 1
+                [0, 1, 2],
+                [1, 4, 7]
+            ],
+            [   // cell 2
+                [0, 1, 2],
+                [2, 5, 8],
+                [2, 4, 6]
+            ],
+            [   // cell 3
+                [3, 4, 5],
+                [0, 3, 6]
+            ],
+            [   // cell 4
+                [1, 4, 7],
+                [3, 4, 5],
+                [2, 4, 6],
+                [0, 4, 8]
+            ],
+            [   // cell 5
+                [2, 5, 8],
+                [3, 4, 5]
+            ],
+            [   // cell 6
+                [0, 3, 6],
+                [6, 7, 8]
+            ],
+            [   // cell 7
+                [1, 4, 7],
+                [6, 7, 8]
+            ],
+            [   // cell 8
+                [2, 5, 8],
+                [6, 7, 8],
+                [0, 4, 8]
+            ],
+        ];
 
         function IsValidRow(row) {
-            
-            let row = getRow(cell % 3);
-            if(row.length == 0) return false;
-    
-            let result = [];
-            if(player1 === "player1") {
-                // check if all the cells in row are 1's
-                result = row.filter(c => c != 1);
+            return !validRows[row];
+        }
+
+        function IsValidColumn(column) {
+            return validColumn[column];
+        }
+
+        function IsValidDiagnal(cell) {
+
+        }
+
+        function GetCell(cell) {
+            if (cell < 0 && cell > 8) {
+                console.log('${cell} : Cell should be in range 0 to 8');
             }
     
-            if(result.length == 0) return true;
+            return this.board[cell / 3][cell % 3];
         }
-    
-        function IsValidColumn(cell) {
-    
-        }
-    
-        function IsValidDiagnal(cell) {
-    
-        }
+
+        console.log('${this.symbol} : turn');
     }
 
-    IsWinner(cell, player1)
+    MarkCell(cell) {
+
+        if (cell < 0 && cell > 8) {
+            console.log('${column} : Not a valid Column. Valid columns are in range 0 to 2');
+        }
+
+        console.log('cell : ${cell}, player: ${this.symbol}');
+
+        if (this.board[cell / 3][cell % 3] != "") {
+            console.log('Cell is already occupied with ${this.symbol}');
+            return;
+        }
+
+        // set cell value
+        this.board[cell / 3][cell % 3] = this.symbol;
+
+        // toggle symbol for next player
+        this.symbol = this.symbol === 'O' ? 'X' : 'O';
+
+        // check winner
+        // we need to check all the possible cases rows, columns and diagnals
+        // can we optimize this for minimum lookup ? todo: minmax algo
+        let cells = this.cellAdjacencyMatrix[cell];
+        let winner = false;
+        for(let index = 0; index < cells.length; index++) {            
+            winner = cells[index].filter(s => this.board[s / 3][s % 3] != this.symbol && this.board[s / 3][s % 3] != "").length > 0
+            if(winner) {
+                console.log('${this.symbol} won the game');
+                return;
+            }
+        }        
+    }
 }
-
-
