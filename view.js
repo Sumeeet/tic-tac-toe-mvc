@@ -12,17 +12,29 @@ class View {
     }
 
     InitializeButtonHandler(onButtonClicked) {
-        // initialize "Reset" button handler
         let button = document.querySelector("#button-reset");
         button.addEventListener('click', event => onButtonClicked());
     }
 
     MarkCell(cellId, state) {
         let element = document.getElementById(cellId);
-        element.textContent = 'X';
+        element.textContent = state.Symbol;
+        let player = document.querySelector(".player");
+        if(state.Winner === "") {
+            player.textContent = `Player ${state.NextSymbol} turn`;
+        }
+        else {
+            player.textContent = `Player ${state.Symbol} wins!`;
+        }
     }
 
-    ResetBoard() {
-
+    ResetBoard(startSymbol) {
+        let rows = document.querySelectorAll(".row");
+        rows.forEach(row => {
+            let cells = document.querySelectorAll(".cell");
+            cells.forEach(cell => cell.textContent = "");
+        });
+        let player = document.querySelector(".player");
+        player.textContent = `Player ${startSymbol} turn`;
     }
 }

@@ -68,6 +68,7 @@ class Model {
         this.symbol = 'X';
         this.winner = false;
         console.log(`${this.symbol} : turn`);
+        return 'X';
     }
 
     GetCell(cell) {
@@ -109,14 +110,15 @@ class Model {
             if(row.length == cells[index].length) {
                 console.log(`${this.symbol} won the game`);
                 this.winner = true;                                
-                return {Cell : this.symbol, Winner: this.symbol, Cells: row};
+                return {Symbol : this.symbol, NextSymbol : nextSymbol, Winner: this.symbol, Cells: []};
             }
         }
 
-        let state = {Cell : this.symbol, Winner: "", Cells: []};
         // toggle symbol for next player
+        let state = {Symbol : this.symbol, NextSymbol : nextSymbol, Winner: "", Cells: []};
         this.symbol = this.symbol === 'O' ? 'X' : 'O';
         console.log(`${this.symbol} : turn`);
+        
         return state;
     }
 }
