@@ -6,9 +6,9 @@ class Model {
         this.symbol = 'X';
 
         this.board = [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0]
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
         ];
 
         this.cellAdjacencyMatrix = [
@@ -55,59 +55,60 @@ class Model {
             ],
         ];
 
-        function IsValidRow(row) {
-            return !validRows[row];
+        this.ResetBoard();
+    }
+
+    ResetBoard() {
+        this.board.forEach(row => {
+            row[0] = '';
+            row[1] = '';
+            row[2] = '';
+        });
+        this.symbol = 'X';
+        console.log(`${this.symbol} : turn`);
+    }
+
+    GetCell(cell) {
+        if (cell < 0 && cell > 8) {
+            console.log(`${cell} : Cell should be in range 0 to 8`);
         }
 
-        function IsValidColumn(column) {
-            return validColumn[column];
-        }
-
-        function IsValidDiagnal(cell) {
-
-        }
-
-        function GetCell(cell) {
-            if (cell < 0 && cell > 8) {
-                console.log('${cell} : Cell should be in range 0 to 8');
-            }
-    
-            return this.board[cell / 3][cell % 3];
-        }
-
-        console.log('${this.symbol} : turn');
+        return this.board[parseInt(cell / 3)][cell % 3];
     }
 
     MarkCell(cell) {
 
         if (cell < 0 && cell > 8) {
-            console.log('${column} : Not a valid Column. Valid columns are in range 0 to 2');
-        }
+            console.log(`${cell} : cell should be in range 0 to 8`);
+        }        
 
-        console.log('cell : ${cell}, player: ${this.symbol}');
-
-        if (this.board[cell / 3][cell % 3] != "") {
-            console.log('Cell is already occupied with ${this.symbol}');
+        if (this.GetCell(cell) !== '') {
+            console.log(`Cell is already occupied with ${this.symbol}`);
             return;
         }
 
         // set cell value
-        this.board[cell / 3][cell % 3] = this.symbol;
+        this.board[parseInt(cell / 3)][cell % 3] = this.symbol;
 
         // toggle symbol for next player
-        this.symbol = this.symbol === 'O' ? 'X' : 'O';
-
+        let nextSymbol = this.symbol === 'O' ? 'X' : 'O';
+        
         // check winner
         // we need to check all the possible cases rows, columns and diagnals
         // can we optimize this for minimum lookup ? todo: minmax algo
         let cells = this.cellAdjacencyMatrix[cell];
         let winner = false;
-        for(let index = 0; index < cells.length; index++) {            
-            winner = cells[index].filter(s => this.board[s / 3][s % 3] != this.symbol && this.board[s / 3][s % 3] != "").length > 0
+        for(let index = 0; index < cells.length; index++) {
+            winner = cells[index].filter(s => this.GetCell(s) !== nextSymbol && this.GetCell(s) !== '').length == 3
             if(winner) {
-                console.log('${this.symbol} won the game');
+                console.log(`${this.symbol} won the game`);
+                this.ResetBoard();
                 return;
             }
-        }        
+        }
+
+        // toggle symbol for next player
+        this.symbol = this.symbol === 'O' ? 'X' : 'O';        
+        console.log(`${this.symbol} : turn`);
     }
 }
