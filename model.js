@@ -4,6 +4,7 @@ class Model {
     constructor() {
         // start symbol
         this.symbol = 'X';
+        this.winner = false;
 
         this.board = [
             ['', '', ''],
@@ -65,6 +66,7 @@ class Model {
             row[2] = '';
         });
         this.symbol = 'X';
+        this.winner = false;
         console.log(`${this.symbol} : turn`);
     }
 
@@ -78,6 +80,11 @@ class Model {
 
     MarkCell(cell) {
 
+        if(this.winner) {
+            alert(`Game over. Press "Reset" button to start again"`);
+            return;
+
+        }
         if (cell < 0 && cell > 8) {
             console.log(`${cell} : cell should be in range 0 to 8`);
         }        
@@ -96,19 +103,20 @@ class Model {
         // check winner
         // we need to check all the possible cases rows, columns and diagnals
         // can we optimize this for minimum lookup ? todo: minmax algo
-        let cells = this.cellAdjacencyMatrix[cell];
-        let winner = false;
+        let cells = this.cellAdjacencyMatrix[cell];        
         for(let index = 0; index < cells.length; index++) {
-            winner = cells[index].filter(s => this.GetCell(s) !== nextSymbol && this.GetCell(s) !== '').length == 3
-            if(winner) {
+            let row = cells[index].filter(s => this.GetCell(s) !== nextSymbol && this.GetCell(s) !== '');
+            if(row.length == cells[index].length) {
                 console.log(`${this.symbol} won the game`);
-                this.ResetBoard();
-                return;
+                this.winner = true;                                
+                return {Cell : this.symbol, Winner: this.symbol, Cells: row};
             }
         }
 
+        let state = {Cell : this.symbol, Winner: "", Cells: []};
         // toggle symbol for next player
-        this.symbol = this.symbol === 'O' ? 'X' : 'O';        
+        this.symbol = this.symbol === 'O' ? 'X' : 'O';
         console.log(`${this.symbol} : turn`);
+        return state;
     }
 }

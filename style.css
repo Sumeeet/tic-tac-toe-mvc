@@ -1,0 +1,47 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: sans-serif;
+    font-size: 1rem;
+    color: #444;
+}
+
+#root-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#table-container {    
+    margin: 5px;
+}
+
+table {
+    table-layout: fixed;
+    width: 100px;
+    height: 100px;
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+tr,
+td {
+    border: 1px solid black;
+    height: 20px;
+    width: 20px;
+}
+
+th,
+td {
+    padding: 5px 5px 5px 10px;
+}
+
+#button-reset {
+    margin-top: 5px;
+    margin-left: 20px;
+}

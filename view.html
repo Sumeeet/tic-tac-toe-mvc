@@ -1,11 +1,54 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>tic-tac-toe</title>        
-    </head>
+<html lang="en">
 
-    <body>
-        <div></div>
-    </body>
-    <script src="model.js"></script>
+<head>
+    <meta charset="utf-8">
+    <title>tic-tac-toe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id=root-container>
+
+        <div>
+            <span>Player 1 turn</span>
+        </div>
+
+        <div id="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="3">tic-tac-toe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class = "row">
+                        <td class = "cell" id="0"> </td>
+                        <td class = "cell" id="1"> </td>
+                        <td class = "cell" id="2"> </td>
+                    </tr>
+                    <tr class = "row">
+                        <td class = "cell" id="3"> </td>
+                        <td class = "cell" id="4"> </td>
+                        <td class = "cell" id="5"> </td>
+                    </tr>
+                    <tr class = "row">
+                        <td class = "cell" id="6"> </td>
+                        <td class = "cell" id="7"> </td>
+                        <td class = "cell" id="8"> </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div id="button-reset">
+                <button type="button">Reset</button>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script src="model.js"></script>
+<script src="view.js"></script>
+<script src="controller.js"></script>
+
 </html>
