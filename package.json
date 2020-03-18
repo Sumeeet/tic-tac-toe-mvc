@@ -1,0 +1,28 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "npm packages",
+  "main": "controller.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sumeeet/tic-tac-toe-mvc.git"
+  },
+  "keywords": [
+    "tic-tac-toe"
+  ],
+  "author": "sumeet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sumeeet/tic-tac-toe-mvc/issues"
+  },
+  "homepage": "https://github.com/Sumeeet/tic-tac-toe-mvc#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "mocha": "^7.1.1"
+  }
+}

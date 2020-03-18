@@ -1,40 +1,40 @@
+/* eslint-disable class-methods-use-this */
 class View {
-    constructor() {}
+  constructor() {}
 
-    InitializeCellHandlers(onCellClicked) {
-        // intialize cell - <td> handlers
-        let elements = document.querySelectorAll(".row");
-        elements.forEach(e => e.addEventListener('click', event => {
-            if (event.target.className === 'cell') {
-                onCellClicked(event.target.id);
-            }
-        }));
-    }
+  InitializeCellHandlers(onCellClicked) {
+    // intialize cell - <td> handlers
+    const elements = document.querySelectorAll(".row");
+    elements.forEach((e) => e.addEventListener("click", (event) => {
+      if (event.target.className === "cell") {
+        onCellClicked(event.target.id);
+      }
+    }));
+  }
 
-    InitializeButtonHandler(onButtonClicked) {
-        let button = document.querySelector("#button-reset");
-        button.addEventListener('click', event => onButtonClicked());
-    }
+  InitializeButtonHandler(onButtonClicked) {
+    const button = document.querySelector("#button-reset");
+    button.addEventListener("click", (event) => onButtonClicked());
+  }
 
-    MarkCell(cellId, state) {
-        let element = document.getElementById(cellId);
-        element.textContent = state.Symbol;
-        let player = document.querySelector(".player");
-        if(state.Winner === "") {
-            player.textContent = `Player ${state.NextSymbol} turn`;
-        }
-        else {
-            player.textContent = `Player ${state.Symbol} wins!`;
-        }
+  MarkCell(cellId, state) {
+    const element = document.getElementById(cellId);
+    element.textContent = state.Symbol;
+    const player = document.querySelector(".player");
+    if (state.Winner === "") {
+      player.textContent = `Player ${state.NextSymbol} turn`;
+    } else {
+      player.textContent = `Player ${state.Symbol} wins!`;
     }
+  }
 
-    ResetBoard(startSymbol) {
-        let rows = document.querySelectorAll(".row");
-        rows.forEach(row => {
-            let cells = document.querySelectorAll(".cell");
-            cells.forEach(cell => cell.textContent = "");
-        });
-        let player = document.querySelector(".player");
-        player.textContent = `Player ${startSymbol} turn`;
-    }
+  ResetBoard(startSymbol) {
+    const rows = document.querySelectorAll(".row");
+    rows.forEach((row) => {
+      const cells = document.querySelectorAll(".cell");
+      cells.forEach((cell) => cell.textContent = "");
+    });
+    const player = document.querySelector(".player");
+    player.textContent = `Player ${startSymbol} turn`;
+  }
 }

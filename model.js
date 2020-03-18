@@ -1,124 +1,123 @@
-'use strict';
-
+/* eslint-disable no-unused-vars */
 class Model {
-    constructor() {
-        // start symbol
-        this.symbol = 'X';
-        this.winner = false;
+  constructor() {
+    // initialize board
+    this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 
-        this.board = [
-            ['', '', ''],
-            ['', '', ''],
-            ['', '', '']
-        ];
+    this.symbolX = "X";
+    this.symbolO = "O";
 
-        this.cellAdjacencyMatrix = [
-            [   // cell 0            
-                [0, 1, 2],
-                [0, 4, 7],
-                [0, 3, 6]
-            ],
-            [   // cell 1
-                [0, 1, 2],
-                [1, 4, 7]
-            ],
-            [   // cell 2
-                [0, 1, 2],
-                [2, 5, 8],
-                [2, 4, 6]
-            ],
-            [   // cell 3
-                [3, 4, 5],
-                [0, 3, 6]
-            ],
-            [   // cell 4
-                [1, 4, 7],
-                [3, 4, 5],
-                [2, 4, 6],
-                [0, 4, 8]
-            ],
-            [   // cell 5
-                [2, 5, 8],
-                [3, 4, 5]
-            ],
-            [   // cell 6
-                [0, 3, 6],
-                [6, 7, 8]
-            ],
-            [   // cell 7
-                [1, 4, 7],
-                [6, 7, 8]
-            ],
-            [   // cell 8
-                [2, 5, 8],
-                [6, 7, 8],
-                [0, 4, 8]
-            ],
-        ];
+    // Player1 maps "X" => 4 and Player2 maps "0" => 1
+    this.playerMap = { X: 4, O: 1 };
 
-        this.ResetBoard();
+    // There can be maximum 8 states in a 3X3 matrix 3 rows, 3 columns and 2 diagonals.
+    // To win a game any state should either have all "X" or "O".
+    // gameState represent these state, index 0,1,2 are rows, 2,3,4 are columns, 5,6 are diagonals
+    // To win, any index in gameState either has a value of 12(4+4+4) or 3(1+1+1)
+    // for example for Player1 to win, if all the cell in the first row are "X" => 4
+    // then sum of all the values at index 0,1,2 shall be 12 set at index 0 in gameState
+    this.subMatrixSum = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    // if any of the sub matrix cells are either all 0's or all 1's
+    // then respective player wins
+    this.subMatrix = [
+      [0, 1, 2], // row 0
+      [3, 4, 5], // row 1
+      [6, 7, 8], // row 2
+      [0, 3, 6], // column 0
+      [1, 4, 7], // column 1
+      [2, 5, 8], // column 2
+      [0, 4, 8], // diagonal 0
+      [2, 4, 6], // diagonal 1
+    ];
+
+    this.boardStates = { Finished: 0, Progress: 1, Error: 2 };
+    this.currentBoardState = this.boardStates.Progress;
+    this.ResetBoard();
+  }
+
+  MakeMove(index, symbol) {
+    if (this.currentBoardState === this.boardStates.Finished) {
+      console.log("Game already over. Reset to start again");
+      return this.currentBoardState;
     }
 
-    ResetBoard() {
-        this.board.forEach(row => {
-            row[0] = '';
-            row[1] = '';
-            row[2] = '';
-        });
-        this.symbol = 'X';
-        this.winner = false;
-        console.log(`${this.symbol} : turn`);
-        return 'X';
+    if (!this.IsValidCell(index)) return false;
+
+    let rowIndex = parseInt(index / 3, 10);
+    let colIndex = index % 3;
+    const cellValue = this.board[rowIndex][colIndex];
+    if (cellValue !== 0) {
+      console.log(`Cell is already occupied by ${this.GetPlayer(cellValue)}`);
+      this.currentBoardState = this.boardStates.Error;
+      return this.currentBoardState;
     }
 
-    GetCell(cell) {
-        if (cell < 0 && cell > 8) {
-            console.log(`${cell} : Cell should be in range 0 to 8`);
-        }
-
-        return this.board[parseInt(cell / 3)][cell % 3];
+    const symbolValue = this.GetPlayerValue(symbol);
+    if (symbolValue === 0) {
+      this.currentBoardState = this.boardStates.Error;
+      return this.currentBoardState;
     }
 
-    MarkCell(cell) {
+    this.board[rowIndex][colIndex] = symbolValue;
 
-        if(this.winner) {
-            alert(`Game over. Press "Reset" button to start again"`);
-            return;
+    const sum = (matrix) => matrix.reduce((accum, curVal) => accum + curVal);
 
-        }
-        if (cell < 0 && cell > 8) {
-            console.log(`${cell} : cell should be in range 0 to 8`);
-        }        
+    rowIndex = index / 3;
+    this.subMatrixSum[rowIndex] = sum(this.subMatrix[rowIndex]);
 
-        if (this.GetCell(cell) !== '') {
-            console.log(`Cell is already occupied with ${this.symbol}`);
-            return;
-        }
+    colIndex = 3 + (index % 3);
+    this.subMatrixSum[colIndex] = sum(this.subMatrix[colIndex]);
 
-        // set cell value
-        this.board[parseInt(cell / 3)][cell % 3] = this.symbol;
+    if (index % 2 === 0) {
+      const leftDiagonal = this.subMatrix[7];
+      if (leftDiagonal.indexOf(index) !== -1) {
+        this.subMatrixSum[7] = sum(leftDiagonal);
+      }
 
-        // toggle symbol for next player
-        let nextSymbol = this.symbol === 'O' ? 'X' : 'O';
-        
-        // check winner
-        // we need to check all the possible cases rows, columns and diagnals
-        // can we optimize this for minimum lookup ? todo: minmax algo
-        let cells = this.cellAdjacencyMatrix[cell];        
-        for(let index = 0; index < cells.length; index++) {
-            let row = cells[index].filter(s => this.GetCell(s) !== nextSymbol && this.GetCell(s) !== '');
-            if(row.length == cells[index].length) {
-                console.log(`${this.symbol} won the game`);
-                this.winner = true;                                
-                return {Symbol : this.symbol, NextSymbol : nextSymbol, Winner: this.symbol, Cells: []};
-            }
-        }
-
-        // toggle symbol for next player
-        let state = {Symbol : this.symbol, NextSymbol : nextSymbol, Winner: "", Cells: []};
-        this.symbol = this.symbol === 'O' ? 'X' : 'O';
-        console.log(`${this.symbol} : turn`);
-        
-        return state;
+      const rightDiagonal = this.subMatrix[8];
+      if (rightDiagonal.indexOf(index) !== -1) {
+        this.subMatrixSum[8] = sum(rightDiagonal);
+      }
     }
+
+    if (this.subMatrixSum.some((val) => val === 3 || val === 12)) {
+      console.log(`${this.player} won the game`);
+      this.currentBoardState = this.boardStates.Finished;
+      return this.currentBoardState;
+    }
+
+    return this.currentBoardState;
+  }
+
+  ResetBoard() {
+    this.board.fill([0, 0, 0], 0);
+    this.currentBoardState = this.boardStates.Progress;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  IsValidCell(index) {
+    if (index < 0 && index > 8) {
+      console.error(`${index} : Cell should be in range 0 to 8`);
+      return false;
+    }
+    return true;
+  }
+
+  GetPlayer(cellValue) {
+    if (cellValue !== this.playerMap.X || cellValue !== this.playerMap.O) {
+      console.error(`Invalid symbol ${cellValue}. Valid symbols are ${this.playerMap.X} and ${this.playerMap.O}`);
+      return "";
+    }
+    return Object.keys(this.playerMap).find((key) => this.playerMap[key] === cellValue);
+  }
+
+  GetPlayerValue(symbol) {
+    if (symbol !== this.symbolX || symbol !== this.symbolO) {
+      console.error(`Invalid symbol ${symbol}. Valid symbols are ${this.symbolX} and ${this.symbolO}`);
+      return 0;
+    }
+
+    return this.playerMap[symbol];
+  }
 }
