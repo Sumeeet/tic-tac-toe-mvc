@@ -1,23 +1,25 @@
-/* eslint-disable class-methods-use-this */
+import { Model } from './model'
+import { View } from './view'
+
 class Controller {
-  constructor(model, view) {
-    this.ResetBoard(model, view);
+  constructor (model, view) {
+    this.ResetBoard(model, view)
 
     view.InitializeCellHandlers((cellId) => {
-      const state = model.MarkCell(cellId);
-      view.MarkCell(cellId, state);
-    });
+      const state = model.MarkCell(cellId)
+      view.MarkCell(cellId, state)
+    })
 
     view.InitializeButtonHandler(() => {
-      this.ResetBoard(model, view);
-    });
+      this.ResetBoard(model, view)
+    })
   }
 
-  ResetBoard(model, view) {
-    const player = model.ResetBoard();
-    view.ResetBoard(player);
+  ResetBoard (model, view) {
+    const player = model.ResetBoard()
+    view.ResetBoard(player)
   }
 }
 
 // eslint-disable-next-line no-unused-vars
-const app = new Controller(new Model(), new View());
+const app = new Controller(new Model(), new View())

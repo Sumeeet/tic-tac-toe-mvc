@@ -1,14 +1,13 @@
-/* eslint-disable no-unused-vars */
 class Model {
-  constructor() {
+  constructor () {
     // initialize board
-    this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-    this.symbolX = "X";
-    this.symbolO = "O";
+    this.symbolX = 'X'
+    this.symbolO = 'O'
 
     // Player1 maps "X" => 4 and Player2 maps "0" => 1
-    this.playerMap = { X: 4, O: 1 };
+    this.playerMap = { X: 4, O: 1 }
 
     // There can be maximum 8 states in a 3X3 matrix 3 rows, 3 columns and 2 diagonals.
     // To win a game any state should either have all "X" or "O".
@@ -16,7 +15,7 @@ class Model {
     // To win, any index in gameState either has a value of 12(4+4+4) or 3(1+1+1)
     // for example for Player1 to win, if all the cell in the first row are "X" => 4
     // then sum of all the values at index 0,1,2 shall be 12 set at index 0 in gameState
-    this.subMatrixSum = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.subMatrixSum = [0, 0, 0, 0, 0, 0, 0, 0]
 
     // if any of the sub matrix cells are either all 0's or all 1's
     // then respective player wins
@@ -28,96 +27,106 @@ class Model {
       [1, 4, 7], // column 1
       [2, 5, 8], // column 2
       [0, 4, 8], // diagonal 0
-      [2, 4, 6], // diagonal 1
-    ];
+      [2, 4, 6] // diagonal 1
+    ]
 
-    this.boardStates = { Finished: 0, Progress: 1, Error: 2 };
-    this.currentBoardState = this.boardStates.Progress;
-    this.ResetBoard();
+    this.boardStates = {
+      Ready: 0, Progress: 1, Finished: 2, Error: 3
+    }
+    this.currentBoardState = this.boardStates.Ready
   }
 
-  MakeMove(index, symbol) {
+  MakeMove (index, symbol) {
     if (this.currentBoardState === this.boardStates.Finished) {
-      console.log("Game already over. Reset to start again");
-      return this.currentBoardState;
+      console.log('Game already over. Reset to start again')
+      return this.currentBoardState
     }
 
-    if (!this.IsValidCell(index)) return false;
+    this.currentBoardState = this.boardStates.Progress
+    if (!this.IsValidBoardCell(index)) return false
 
-    let rowIndex = parseInt(index / 3, 10);
-    let colIndex = index % 3;
-    const cellValue = this.board[rowIndex][colIndex];
+    const rowIndex = parseInt(index / 3, 10)
+    const colIndex = index % 3
+    const cellValue = this.board[rowIndex][colIndex]
     if (cellValue !== 0) {
-      console.log(`Cell is already occupied by ${this.GetPlayer(cellValue)}`);
-      this.currentBoardState = this.boardStates.Error;
-      return this.currentBoardState;
+      console.log(`Cell is already occupied by ${this.GetPlayer(cellValue)}`)
+      this.currentBoardState = this.boardStates.Error
+      return this.currentBoardState
     }
 
-    const symbolValue = this.GetPlayerValue(symbol);
+    const symbolValue = this.GetPlayerValue(symbol)
     if (symbolValue === 0) {
-      this.currentBoardState = this.boardStates.Error;
-      return this.currentBoardState;
+      this.currentBoardState = this.boardStates.Error
+      return this.currentBoardState
     }
 
-    this.board[rowIndex][colIndex] = symbolValue;
+    this.board[rowIndex][colIndex] = symbolValue
 
-    const sum = (matrix) => matrix.reduce((accum, curVal) => accum + curVal);
+    const sum = function (matrix, board) {
+      let accum = 0
+      for (let index = 0; index < matrix.length; ++index) {
+        const rowIndex = parseInt(index / 3, 10)
+        const colIndex = index % 3
+        accum += board[rowIndex][colIndex]
+      }
+      return accum
+    }
 
-    rowIndex = index / 3;
-    this.subMatrixSum[rowIndex] = sum(this.subMatrix[rowIndex]);
+    this.subMatrixSum[rowIndex] = sum(this.subMatrix[rowIndex], this.board)
 
-    colIndex = 3 + (index % 3);
-    this.subMatrixSum[colIndex] = sum(this.subMatrix[colIndex]);
+    this.subMatrixSum[colIndex + 3] = sum(this.subMatrix[colIndex + 3], this.board)
 
     if (index % 2 === 0) {
-      const leftDiagonal = this.subMatrix[7];
+      const leftDiagonal = this.subMatrix[6]
       if (leftDiagonal.indexOf(index) !== -1) {
-        this.subMatrixSum[7] = sum(leftDiagonal);
+        this.subMatrixSum[7] = sum(leftDiagonal, this.board)
       }
 
-      const rightDiagonal = this.subMatrix[8];
+      const rightDiagonal = this.subMatrix[7]
       if (rightDiagonal.indexOf(index) !== -1) {
-        this.subMatrixSum[8] = sum(rightDiagonal);
+        this.subMatrixSum[8] = sum(rightDiagonal, this.board)
       }
     }
 
     if (this.subMatrixSum.some((val) => val === 3 || val === 12)) {
-      console.log(`${this.player} won the game`);
-      this.currentBoardState = this.boardStates.Finished;
-      return this.currentBoardState;
+      console.log(`${symbol} won the game`)
+      this.currentBoardState = this.boardStates.Finished
+      return this.currentBoardState
     }
 
-    return this.currentBoardState;
+    return this.currentBoardState
   }
 
-  ResetBoard() {
-    this.board.fill([0, 0, 0], 0);
-    this.currentBoardState = this.boardStates.Progress;
+  ResetBoard () {
+    this.board.fill([0, 0, 0], 0)
+    this.currentBoardState = this.boardStates.Ready
   }
 
   // eslint-disable-next-line class-methods-use-this
-  IsValidCell(index) {
-    if (index < 0 && index > 8) {
-      console.error(`${index} : Cell should be in range 0 to 8`);
-      return false;
+  IsValidBoardCell (index) {
+    if (index < 0 || index > 8) {
+      console.error(`${index} : Cell should be in range 0 to 8`)
+      return false
     }
-    return true;
+    return true
   }
 
-  GetPlayer(cellValue) {
-    if (cellValue !== this.playerMap.X || cellValue !== this.playerMap.O) {
-      console.error(`Invalid symbol ${cellValue}. Valid symbols are ${this.playerMap.X} and ${this.playerMap.O}`);
-      return "";
+  GetPlayer (cellValue) {
+    if (cellValue !== this.playerMap.X && cellValue !== this.playerMap.O) {
+      console.error(`Invalid symbol ${cellValue}. Valid symbols are ${this.playerMap.X} and ${this.playerMap.O}`)
+      return ''
     }
-    return Object.keys(this.playerMap).find((key) => this.playerMap[key] === cellValue);
+    return Object.keys(this.playerMap).find((key) => this.playerMap[key] === cellValue)
   }
 
-  GetPlayerValue(symbol) {
-    if (symbol !== this.symbolX || symbol !== this.symbolO) {
-      console.error(`Invalid symbol ${symbol}. Valid symbols are ${this.symbolX} and ${this.symbolO}`);
-      return 0;
+  GetPlayerValue (symbol) {
+    if (symbol !== this.symbolX && symbol !== this.symbolO) {
+      console.error(`Invalid symbol ${symbol}. Valid symbols are ${this.symbolX} and ${this.symbolO}`)
+      return 0
     }
 
-    return this.playerMap[symbol];
+    return this.playerMap[symbol]
   }
 }
+
+module.exports = Model

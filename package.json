@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "npm packages",
   "main": "controller.js",
+  "directories": {
+    "test": "./test"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -21,8 +24,12 @@
   "homepage": "https://github.com/Sumeeet/tic-tac-toe-mvc#readme",
   "devDependencies": {
     "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
-    "mocha": "^7.1.1"
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^7.1.1",
+    "standard": "^14.3.3"
   }
 }
