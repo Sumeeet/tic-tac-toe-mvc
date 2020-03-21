@@ -31,7 +31,7 @@ class Model {
     ]
 
     this.boardStates = {
-      Ready: 0, Progress: 1, Finished: 2, Error: 3
+      Ready: 0, Progress: 1, Finished: 2, Tie: 3, Error: 4
     }
     this.currentBoardState = this.boardStates.Ready
   }
@@ -59,13 +59,19 @@ class Model {
       return this.currentBoardState
     }
 
-    this.SetValueAt(index, symbolValue)
-
     const sum = (matrix) => {
       let accum = 0
       matrix.forEach(element => { accum += this.GetVaueAt(element) })
       return accum
     }
+
+    if (this.subMatrixSum.filter((val) => val === 0).length === 0) {
+      this.currentBoardState = this.boardStates.Tie
+      console.log('Its a Tie')
+      return this.currentBoardState
+    }
+
+    this.SetValueAt(index, symbolValue)
 
     const rowIndex = this.GetRowIndex(index)
     const colIndex = this.GetColIndex(index)
@@ -96,11 +102,11 @@ class Model {
   }
 
   ResetBoard () {
-    this.board.fill([0, 0, 0], 0)
+    this.board.forEach((arr) => arr.fill(0, 0))
+    this.subMatrixSum.fill(0, 0)
     this.currentBoardState = this.boardStates.Ready
   }
 
-  // eslint-disable-next-line class-methods-use-this
   IsValidBoardCell (index) {
     if (index < 0 || index > 8) {
       console.error(`${index} : Cell should be in range 0 to 8`)

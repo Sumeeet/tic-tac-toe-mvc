@@ -3,7 +3,7 @@ const assert = require('assert')
 const Model = require('../model')
 
 describe('TicTacToe', () => {
-  describe('(InitializeBoard)', () => {
+  context('(InitializeBoard)', () => {
     it('Board state should be in Ready state', () => {
       const ticktacmodel = new Model()
       assert.strictEqual(ticktacmodel.currentBoardState, 0)
@@ -11,7 +11,7 @@ describe('TicTacToe', () => {
     })
   })
 
-  describe('(GetPlayer)', () => {
+  context('(GetPlayer)', () => {
     it('Player 0 should be O and Plyaer 1 should be X', () => {
       const ticktacmodel = new Model()
       assert.strictEqual(ticktacmodel.GetPlayer(1), 'O')
@@ -19,7 +19,7 @@ describe('TicTacToe', () => {
     })
   })
 
-  describe('(GetPlayerValue)', () => {
+  context('(GetPlayerValue)', () => {
     it('Player 0 should be O and Plyaer 1 should be X', () => {
       const ticktacmodel = new Model()
       assert.strictEqual(ticktacmodel.GetPlayerValue('O'), 1)
@@ -27,7 +27,7 @@ describe('TicTacToe', () => {
     })
   })
 
-  describe('(IsValidBoardCell)', () => {
+  context('(IsValidBoardCell)', () => {
     it('Board cell is not valid', () => {
       const ticktacmodel = new Model()
       const numbers = [-1, -2, 9, 10]
@@ -41,13 +41,44 @@ describe('TicTacToe', () => {
     })
   })
 
-  describe('(MakeMove)', () => {
+  context('(MakeMove)', () => {
     it('Player 0 should be O and Plyaer 1 should be X', () => {
       const ticktacmodel = new Model()
       ticktacmodel.MakeMove(0, 'O')
       ticktacmodel.MakeMove(1, 'O')
       ticktacmodel.MakeMove(2, 'O')
       assert.strictEqual(ticktacmodel.currentBoardState, 2)
+    })
+  })
+
+  context('(SimulateBoard)', () => {
+    it('Simulate Board', () => {
+      const ticktacmodel = new Model()
+      // generate random numbers between [0,8]
+      const min = 0
+      const max = 8
+      let startPlayer = 'O'
+      for (var i = 0; i < 100; ++i) {
+        switch (ticktacmodel.currentBoardState) {
+          case ticktacmodel.boardStates.Finished:
+          case ticktacmodel.boardStates.Tie:
+            ticktacmodel.ResetBoard()
+            startPlayer = 'O'
+            break
+          case ticktacmodel.boardStates.Progress:
+            startPlayer = startPlayer === 'X' ? 'O' : 'X'
+            break
+          case ticktacmodel.boardStates.Error:
+            // same player, play again
+            i -= 1
+            break
+          default:
+            break
+        }
+        const cellIndex = Math.floor(Math.random() * (max - min + 1)) + min
+        ticktacmodel.MakeMove(cellIndex, startPlayer)
+      }
+      assert.strictEqual(i, 100)
     })
   })
 })
