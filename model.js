@@ -43,11 +43,10 @@ class Model {
     }
 
     this.currentBoardState = this.boardStates.Progress
+
     if (!this.IsValidBoardCell(index)) return false
 
-    const rowIndex = parseInt(index / 3, 10)
-    const colIndex = index % 3
-    const cellValue = this.board[rowIndex][colIndex]
+    const cellValue = this.GetVaueAt(index)
     if (cellValue !== 0) {
       console.log(`Cell is already occupied by ${this.GetPlayer(cellValue)}`)
       this.currentBoardState = this.boardStates.Error
@@ -60,31 +59,30 @@ class Model {
       return this.currentBoardState
     }
 
-    this.board[rowIndex][colIndex] = symbolValue
+    this.SetValueAt(index, symbolValue)
 
-    const sum = function (matrix, board) {
+    const sum = (matrix) => {
       let accum = 0
-      for (let index = 0; index < matrix.length; ++index) {
-        const rowIndex = parseInt(index / 3, 10)
-        const colIndex = index % 3
-        accum += board[rowIndex][colIndex]
-      }
+      matrix.forEach(element => { accum += this.GetVaueAt(element) })
       return accum
     }
 
-    this.subMatrixSum[rowIndex] = sum(this.subMatrix[rowIndex], this.board)
+    const rowIndex = this.GetRowIndex(index)
+    const colIndex = this.GetColIndex(index)
 
-    this.subMatrixSum[colIndex + 3] = sum(this.subMatrix[colIndex + 3], this.board)
+    this.subMatrixSum[rowIndex] = sum(this.subMatrix[rowIndex])
+
+    this.subMatrixSum[colIndex + 3] = sum(this.subMatrix[colIndex + 3])
 
     if (index % 2 === 0) {
       const leftDiagonal = this.subMatrix[6]
       if (leftDiagonal.indexOf(index) !== -1) {
-        this.subMatrixSum[7] = sum(leftDiagonal, this.board)
+        this.subMatrixSum[6] = sum(leftDiagonal)
       }
 
       const rightDiagonal = this.subMatrix[7]
       if (rightDiagonal.indexOf(index) !== -1) {
-        this.subMatrixSum[8] = sum(rightDiagonal, this.board)
+        this.subMatrixSum[7] = sum(rightDiagonal)
       }
     }
 
@@ -126,6 +124,26 @@ class Model {
     }
 
     return this.playerMap[symbol]
+  }
+
+  GetRowIndex (cellIndex) {
+    return parseInt(cellIndex / 3, 10)
+  }
+
+  GetColIndex (cellIndex) {
+    return cellIndex % 3
+  }
+
+  GetVaueAt (cellIndex) {
+    const rowIndex = this.GetRowIndex(cellIndex)
+    const colIndex = this.GetColIndex(cellIndex)
+    return this.board[rowIndex][colIndex]
+  }
+
+  SetValueAt (cellIndex, val) {
+    const rowIndex = this.GetRowIndex(cellIndex)
+    const colIndex = this.GetColIndex(cellIndex)
+    this.board[rowIndex][colIndex] = val
   }
 }
 
