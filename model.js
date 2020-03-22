@@ -5,6 +5,7 @@ class Model {
 
     this.symbolX = 'X'
     this.symbolO = 'O'
+    this.player = this.symbolX
 
     // Player1 maps "X" => 4 and Player2 maps "0" => 1
     this.playerMap = { X: 4, O: 1 }
@@ -31,33 +32,44 @@ class Model {
     ]
 
     this.boardStates = {
-      Ready: 0, Progress: 1, Finished: 2, Tie: 3, Error: 4
+      Ready: 0, Progress: 1, Finished: 2, Tie: 3
     }
-    this.currentBoardState = this.boardStates.Ready
+    this.currentBoardState = { BoardState: this.boardStates.Ready, Player: this.player, Message: `Player ${this.symbolX} turn` }
   }
 
-  MakeMove (index, symbol) {
-    if (this.currentBoardState === this.boardStates.Finished) {
-      console.log('Game already over. Reset to start again')
-      return this.currentBoardState
+  MakeMove (index) {
+    switch (this.currentBoardState.BoardState) {
+      case this.boardStates.Ready:
+        this.currentBoardState.BoardState = this.boardStates.Progress
+        this.MarkCell(index)
+        break
+      case this.boardStates.Progress:
+        this.MarkCell(index)
+        break
+      case this.boardStates.Tie:
+        this.currentBoardState.Message = 'Its a Tie. Reset to play again'
+        break
+      case this.boardStates.Finished:
+        this.currentBoardState.Message = 'Game over. Reset to play again.'
+        break
     }
+    return this.currentBoardState
+  }
 
-    this.currentBoardState = this.boardStates.Progress
-
-    if (!this.IsValidBoardCell(index)) return false
+  MarkCell (index) {
+    if (!this.IsValidBoardCell(index)) {
+      this.currentBoardState.Message = `${index} : Cell should be in range 0 to 8`
+      return
+    }
 
     const cellValue = this.GetVaueAt(index)
     if (cellValue !== 0) {
-      console.log(`Cell is already occupied by ${this.GetPlayer(cellValue)}`)
-      this.currentBoardState = this.boardStates.Error
-      return this.currentBoardState
+      this.currentBoardState.Message = `Cell is already occupied by ${this.GetPlayer(cellValue)}`
+      return
     }
 
-    const symbolValue = this.GetPlayerValue(symbol)
-    if (symbolValue === 0) {
-      this.currentBoardState = this.boardStates.Error
-      return this.currentBoardState
-    }
+    const symbolValue = this.GetPlayerValue(this.player)
+    if (symbolValue === 0) { return }
 
     const sum = (matrix) => {
       let accum = 0
@@ -66,9 +78,9 @@ class Model {
     }
 
     if (this.subMatrixSum.filter((val) => val === 0).length === 0) {
-      this.currentBoardState = this.boardStates.Tie
-      console.log('Its a Tie')
-      return this.currentBoardState
+      // its a tie
+      this.currentBoardState.BoardState = this.boardStates.Tie
+      return
     }
 
     this.SetValueAt(index, symbolValue)
@@ -93,23 +105,26 @@ class Model {
     }
 
     if (this.subMatrixSum.some((val) => val === 3 || val === 12)) {
-      console.log(`${symbol} won the game`)
-      this.currentBoardState = this.boardStates.Finished
-      return this.currentBoardState
+      // game finished
+      this.currentBoardState.Message = `${this.player} won the game`
+      this.currentBoardState.BoardState = this.boardStates.Finished
+      return
     }
 
-    return this.currentBoardState
+    this.player = (this.player === this.symbolX) ? this.symbolO : this.symbolX
+    this.boardStates.Message = `Player ${this.player} turn`
   }
 
   ResetBoard () {
     this.board.forEach((arr) => arr.fill(0, 0))
     this.subMatrixSum.fill(0, 0)
-    this.currentBoardState = this.boardStates.Ready
+    this.player = this.symbolX
+    this.currentBoardState = { BoardState: this.boardStates.Ready, Player: this.player, Message: `Player ${this.symbolX} turn` }
+    return this.currentBoardState
   }
 
   IsValidBoardCell (index) {
     if (index < 0 || index > 8) {
-      console.error(`${index} : Cell should be in range 0 to 8`)
       return false
     }
     return true
@@ -128,7 +143,6 @@ class Model {
       console.error(`Invalid symbol ${symbol}. Valid symbols are ${this.symbolX} and ${this.symbolO}`)
       return 0
     }
-
     return this.playerMap[symbol]
   }
 
@@ -153,4 +167,4 @@ class Model {
   }
 }
 
-module.exports = Model
+export default Model

@@ -11,16 +11,11 @@
     <div id=root-container>
 
         <div>
-            <span class="player">Player 1 turn</span>
+            <h2>tic-tac-toe</h1>
         </div>
 
         <div id="table-container">
             <table>
-                <thead>
-                    <tr>
-                        <th colspan="3">tic-tac-toe</th>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr class = "row">
                         <td class = "cell" id="0"> </td>
@@ -40,6 +35,10 @@
                 </tbody>
             </table>
 
+            <div class="player">
+                <span>Player X turn</button>
+            </div>
+
             <div id="button-reset">
                 <button type="button">Reset</button>
             </div>
@@ -47,8 +46,10 @@
         </div>
     </div>
 </body>
+
+<script src="controller.js"></script>
 <script src="model.js"></script>
 <script src="view.js"></script>
-<script src="controller.js"></script>
+
 
 </html>

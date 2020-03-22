@@ -1,4 +1,4 @@
-export class View {
+class View {
   InitializeCellHandlers (onCellClicked) {
     // intialize cell - <td> handlers
     const elements = document.querySelectorAll('.row')
@@ -14,24 +14,23 @@ export class View {
     button.addEventListener('click', () => onButtonClicked())
   }
 
-  MarkCell (cellId, state) {
+  MakeMove (cellId, state) {
+    // set cell with 'X' or 'O'
     const element = document.getElementById(cellId)
-    element.textContent = state.Symbol
+    element.textContent = state.Player
     const player = document.querySelector('.player')
-    if (state.Winner === '') {
-      player.textContent = `Player ${state.NextSymbol} turn`
-    } else {
-      player.textContent = `Player ${state.Symbol} wins!`
-    }
+    player.textContent = state.Message
   }
 
-  ResetBoard (startSymbol) {
+  ResetBoard (state) {
     const rows = document.querySelectorAll('.row')
     rows.forEach(() => {
       const cells = document.querySelectorAll('.cell')
       cells.forEach((cell) => cell.textContent = '')
     })
     const player = document.querySelector('.player')
-    player.textContent = `Player ${startSymbol} turn`
+    player.textContent = state.Message
   }
 }
+
+export default View

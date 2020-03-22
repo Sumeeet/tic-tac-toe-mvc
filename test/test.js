@@ -6,7 +6,7 @@ describe('TicTacToe', () => {
   context('(InitializeBoard)', () => {
     it('Board state should be in Ready state', () => {
       const ticktacmodel = new Model()
-      assert.strictEqual(ticktacmodel.currentBoardState, 0)
+      assert.strictEqual(ticktacmodel.currentBoardState.BoardState, 0)
       ticktacmodel.board.forEach((arr) => arr.some((val) => assert.strictEqual(val, 0)))
     })
   })
@@ -41,42 +41,23 @@ describe('TicTacToe', () => {
     })
   })
 
-  context('(MakeMove)', () => {
-    it('Player 0 should be O and Plyaer 1 should be X', () => {
-      const ticktacmodel = new Model()
-      ticktacmodel.MakeMove(0, 'O')
-      ticktacmodel.MakeMove(1, 'O')
-      ticktacmodel.MakeMove(2, 'O')
-      assert.strictEqual(ticktacmodel.currentBoardState, 2)
-    })
-  })
-
   context('(SimulateBoard)', () => {
     it('Simulate Board', () => {
       const ticktacmodel = new Model()
       // generate random numbers between [0,8]
       const min = 0
       const max = 8
-      let startPlayer = 'O'
       for (var i = 0; i < 100; ++i) {
         switch (ticktacmodel.currentBoardState) {
           case ticktacmodel.boardStates.Finished:
           case ticktacmodel.boardStates.Tie:
             ticktacmodel.ResetBoard()
-            startPlayer = 'O'
-            break
-          case ticktacmodel.boardStates.Progress:
-            startPlayer = startPlayer === 'X' ? 'O' : 'X'
-            break
-          case ticktacmodel.boardStates.Error:
-            // same player, play again
-            i -= 1
             break
           default:
             break
         }
         const cellIndex = Math.floor(Math.random() * (max - min + 1)) + min
-        ticktacmodel.MakeMove(cellIndex, startPlayer)
+        ticktacmodel.MakeMove(cellIndex)
       }
       assert.strictEqual(i, 100)
     })

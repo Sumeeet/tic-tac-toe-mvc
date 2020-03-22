@@ -1,13 +1,13 @@
-import { Model } from './model'
-import { View } from './view'
+import Model from './model'
+import View from './view'
 
 class Controller {
   constructor (model, view) {
     this.ResetBoard(model, view)
 
-    view.InitializeCellHandlers((cellId) => {
-      const state = model.MarkCell(cellId)
-      view.MarkCell(cellId, state)
+    view.InitializeCellHandlers((cellIndex) => {
+      const state = model.MakeMove(cellIndex)
+      view.MakeMove(cellIndex, state)
     })
 
     view.InitializeButtonHandler(() => {
@@ -16,8 +16,7 @@ class Controller {
   }
 
   ResetBoard (model, view) {
-    const player = model.ResetBoard()
-    view.ResetBoard(player)
+    view.ResetBoard(model.ResetBoard())
   }
 }
 
