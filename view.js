@@ -16,11 +16,9 @@ class View {
   }
 
   MakeMove (cellId, state) {
-    switch (state.BoardState) {
-      case 1:
-        // set cell with 'X' or 'O'
-        document.getElementById(cellId).textContent = state.Player
-        break
+    const element = document.getElementById(cellId);
+    if (element.textContent === '') {
+      element.textContent = state.Player
     }
     const player = document.querySelector('.player')
     player.textContent = state.Message
