@@ -1,5 +1,6 @@
-import Model from './model'
-import View from './view'
+/* eslint-disable no-undef */
+// import Model from './model'
+// import View from './view'
 
 class Controller {
   constructor (model, view) {

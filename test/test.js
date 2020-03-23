@@ -14,16 +14,16 @@ describe('TicTacToe', () => {
   context('(GetPlayer)', () => {
     it('Player 0 should be O and Plyaer 1 should be X', () => {
       const ticktacmodel = new Model()
-      assert.strictEqual(ticktacmodel.GetPlayer(1), 'O')
-      assert.strictEqual(ticktacmodel.GetPlayer(4), 'X')
+      assert.strictEqual(ticktacmodel.GetSymbol(1), 'O')
+      assert.strictEqual(ticktacmodel.GetSymbol(4), 'X')
     })
   })
 
   context('(GetPlayerValue)', () => {
     it('Player 0 should be O and Plyaer 1 should be X', () => {
       const ticktacmodel = new Model()
-      assert.strictEqual(ticktacmodel.GetPlayerValue('O'), 1)
-      assert.strictEqual(ticktacmodel.GetPlayerValue('X'), 4)
+      assert.strictEqual(ticktacmodel.GetSymbolValue('O'), 1)
+      assert.strictEqual(ticktacmodel.GetSymbolValue('X'), 4)
     })
   })
 
@@ -48,9 +48,8 @@ describe('TicTacToe', () => {
       const min = 0
       const max = 8
       for (var i = 0; i < 100; ++i) {
-        switch (ticktacmodel.currentBoardState) {
+        switch (ticktacmodel.currentBoardState.BoardState) {
           case ticktacmodel.boardStates.Finished:
-          case ticktacmodel.boardStates.Tie:
             ticktacmodel.ResetBoard()
             break
           default:

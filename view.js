@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 class View {
   InitializeCellHandlers (onCellClicked) {
     // intialize cell - <td> handlers
@@ -15,9 +16,12 @@ class View {
   }
 
   MakeMove (cellId, state) {
-    // set cell with 'X' or 'O'
-    const element = document.getElementById(cellId)
-    element.textContent = state.Player
+    switch (state.BoardState) {
+      case 1:
+        // set cell with 'X' or 'O'
+        document.getElementById(cellId).textContent = state.Player
+        break
+    }
     const player = document.querySelector('.player')
     player.textContent = state.Message
   }
@@ -33,4 +37,4 @@ class View {
   }
 }
 
-export default View
+// export default View
