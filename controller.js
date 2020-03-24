@@ -7,8 +7,10 @@ class Controller {
     this.ResetBoard(model, view)
 
     view.InitializeCellHandlers((cellIndex) => {
-      const state = model.MakeMove(cellIndex)
-      view.MakeMove(cellIndex, state)
+      if (model.currentBoardState.BoardState !== model.boardStates.Finished) {
+        const state = model.MakeMove(cellIndex)
+        view.MakeMove(cellIndex, state)
+      }
     })
 
     view.InitializeButtonHandler(() => {

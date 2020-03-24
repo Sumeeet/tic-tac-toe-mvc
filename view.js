@@ -16,9 +16,15 @@ class View {
   }
 
   MakeMove (cellId, state) {
-    const element = document.getElementById(cellId);
-    if (element.textContent === '') {
-      element.textContent = state.Player
+    switch (state.BoardState) {
+      case 1:
+      case 2: {
+        const element = document.getElementById(cellId)
+        if (element.textContent === '') {
+          element.textContent = state.Player
+        }
+        break
+      }
     }
     const player = document.querySelector('.player')
     player.textContent = state.Message
