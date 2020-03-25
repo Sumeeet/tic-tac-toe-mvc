@@ -50,6 +50,7 @@ describe('TicTacToe', () => {
       for (var i = 0; i < 100; ++i) {
         switch (ticktacmodel.currentBoardState.BoardState) {
           case ticktacmodel.boardStates.Finished:
+            ticktacmodel.PrintBoard()
             ticktacmodel.ResetBoard()
             break
           default:

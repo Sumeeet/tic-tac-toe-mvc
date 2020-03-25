@@ -135,5 +135,21 @@ class Model {
     }
     return false
   }
+
+  PrintBoard () {
+    //    O | O | O
+    //   ---|---|---
+    //    X | X | X
+    //   ---|---|---
+    //    O | O | O
+
+    console.log(` ${this.board[0][0]} | ${this.board[0][1]} | ${this.board[0][2]} `)
+    console.log('---|---|---')
+    console.log(` ${this.board[1][0]} | ${this.board[1][1]} | ${this.board[1][2]} `)
+    console.log('---|---|---')
+    console.log(` ${this.board[2][0]} | ${this.board[2][1]} | ${this.board[2][2]} `)
+    console.log(`${this.currentBoardState.Message}`)
+    console.log('')
+  }
 }
 module.exports = Model
