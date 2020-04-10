@@ -34,7 +34,7 @@ class View {
     const rows = document.querySelectorAll('.row')
     rows.forEach(() => {
       const cells = document.querySelectorAll('.cell')
-      cells.forEach((cell) => cell.textContent = '')
+      cells.forEach((cell) => (cell.textContent = ''))
     })
     const player = document.querySelector('.player')
     player.textContent = state.Message
