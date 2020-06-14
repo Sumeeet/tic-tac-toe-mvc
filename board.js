@@ -66,14 +66,14 @@ exports.board = (dimension) => {
         return
       }
 
-      const getEmptyRow = (nCells, cellLayout) => {
-        if (nCells === 0) return cellLayout
-        return cellLayout + getEmptyRow(nCells - 1, cellLayout)
+      const getEmptyRow = (nCells, cellLayout, rowLayout) => {
+        if (nCells === 0) return rowLayout
+        return getEmptyRow(nCells - 1, cellLayout, rowLayout + cellLayout)
       }
 
       for (let index = 0; index < dimension; index++) {
         console.log(` ${getRow(index).reduce((accum, value) => `${accum} | ${value}`)} |`)
-        console.log(getEmptyRow(dimension - 1, '---|'))
+        console.log(getEmptyRow(dimension, '---|', ''))
       }
 
       console.log('')
