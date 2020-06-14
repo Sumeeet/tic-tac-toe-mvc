@@ -1,5 +1,7 @@
-exports.board = (dimension, rules) => {
-  let board = [];
+exports.board = (dimension) => {
+  let board = []
+  const symbols = ['X', 'O']
+  const symbolMap = { X: 4, O: 1 };
 
   // Initialize board
   (() => {
@@ -14,9 +16,9 @@ exports.board = (dimension, rules) => {
 
   function isBoardEmty () { return dimension === 0 }
 
-  function getRow (index) { return board.slice(index * dimension, index * dimension + dimension) }
-
   function IsValidIndex (index) { return (index >= 0 && index < dimension * dimension) }
+
+  function getRow (index) { return board.slice(index * dimension, index * dimension + dimension) }
 
   return {
 
@@ -36,13 +38,24 @@ exports.board = (dimension, rules) => {
         return
       }
 
-      rules.move(index, value, board)
+      if (board[index] !== ' ') {
+        console.error(`cell index ${index} is already occupied`)
+        return
+      }
+
+      if (symbols.indexOf(value) === -1) {
+        console.error(`Invalid symbol ${value}. Valid symbols are ${symbols.toString()}`)
+        return
+      }
+
+      board[index] = symbolMap[value]
+      console.log(`value at index[${index}] is ${board[index]}`)
     },
 
     /**
-     * Reset board to default state
+     * clear board
      */
-    reset: () => { board = Array(dimension * dimension).fill(' ') },
+    clear: () => { board = Array(dimension * dimension).fill(' ') },
 
     /**
      * Print the board on console
