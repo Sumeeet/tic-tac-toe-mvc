@@ -1,9 +1,6 @@
-exports.board = (dimension) => {
-  let board = []
-  const symbols = ['X', 'O']
-  const symbolMap = { X: 4, O: 1 };
+exports.board = (dimension, data, rules) => {
+  let board = [];
 
-  // Initialize board
   (() => {
     const dim = parseInt(dimension)
     if (isNaN(dim)) {
@@ -25,9 +22,9 @@ exports.board = (dimension) => {
     /**
      * Place appropriate values at board cell
      * @param {number} index index is a position in 1-dim array
-     * @param {number} value value to be stored at array index
+     * @param {number} symbol value to be stored at array index
      */
-    makeMove: (index, value) => {
+    makeMove: (index, symbol) => {
       if (isBoardEmty()) {
         console.error(`Empty borad ${board}. Initialize board first.`)
         return
@@ -43,13 +40,12 @@ exports.board = (dimension) => {
         return
       }
 
-      if (symbols.indexOf(value) === -1) {
-        console.error(`Invalid symbol ${value}. Valid symbols are ${symbols.toString()}`)
+      if (!data.isSymbol(symbol)) {
+        console.error(`Invalid symbol ${symbol}. Valid symbols are ${data.getSymbols()}`)
         return
       }
 
-      board[index] = symbolMap[value]
-      console.log(`value at index[${index}] is ${board[index]}`)
+      board[index] = data.getSymbolValue(symbol)
     },
 
     /**
@@ -72,10 +68,13 @@ exports.board = (dimension) => {
       }
 
       for (let index = 0; index < dimension; index++) {
-        console.log(` ${getRow(index).reduce((accum, value) => `${accum} | ${value}`)} |`)
-        console.log(getEmptyRow(dimension, '---|', ''))
-      }
+        console.log(` ${getRow(index).reduce((accum, value) => `${accum} | ${value}`)}`)
 
+        if (index < dimension - 1) {
+          const emptyRow = getEmptyRow(dimension, '---|', '')
+          console.log(emptyRow.substring(0, emptyRow.length - 1))
+        }
+      }
       console.log('')
     }
   }
