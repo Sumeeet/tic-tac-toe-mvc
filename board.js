@@ -1,81 +1,75 @@
-exports.board = (dimension, data, rules) => {
-  let board = [];
+exports.board = (symbols, rules) => {
+  const board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-  (() => {
-    const dim = parseInt(dimension)
-    if (isNaN(dim)) {
-      console.error(`${dimension} is not a valid number`)
+  const isBoardEmty = () => board.length === 0
+
+  const IsValidCell = cellIndex => cellIndex >= 0 && cellIndex <= 8
+
+  const getRowIndex = (cellIndex) => parseInt(cellIndex / 3, 10)
+
+  const getColIndex = (cellIndex) => cellIndex % 3
+
+  const get = (cellIndex) => board[getRowIndex(cellIndex)][getColIndex(cellIndex)]
+
+  const set = (cellIndex, symbol) => { board[getRowIndex(cellIndex)][getColIndex(cellIndex)] = symbol }
+
+  const makeMove = (index, symbol) => {
+    if (isBoardEmty()) {
+      console.error(`Empty borad ${board}. Initialize board first.`)
       return
     }
 
-    board = Array(dimension * dimension).fill(' ')
-  })()
+    if (!IsValidCell(index)) {
+      console.error(`Invalid cell index ${index}. Cell should be in range 0 to 8`)
+      return
+    }
 
-  function isBoardEmty () { return dimension === 0 }
+    if (!symbols.isSymbol(symbol)) {
+      console.error(`Invalid symbol ${symbol}. Valid symbols are ${symbols.toString()}`)
+      return
+    }
 
-  function IsValidIndex (index) { return (index >= 0 && index < dimension * dimension) }
+    if (!rules.isValidMove(get(index))) {
+      console.error(`Invalid move at ${index}`)
+      return
+    }
 
-  function getRow (index) { return board.slice(index * dimension, index * dimension + dimension) }
+    // all ok, set symbol in grid
+    set(index, symbols.getSymbolValue(symbol))
 
-  return {
+    const getValues = (indexes) => indexes.map((index) => get(index))
 
-    /**
-     * Place appropriate values at board cell
-     * @param {number} index index is a position in 1-dim array
-     * @param {number} symbol value to be stored at array index
-     */
-    makeMove: (index, symbol) => {
-      if (isBoardEmty()) {
-        console.error(`Empty borad ${board}. Initialize board first.`)
-        return
-      }
-
-      if (!IsValidIndex(index)) {
-        console.error(`Invalid cell index ${index}. Valid index is from 0 to ${dimension * dimension - 1}`)
-        return
-      }
-
-      if (board[index] !== ' ') {
-        console.error(`cell index ${index} is already occupied`)
-        return
-      }
-
-      if (!data.isSymbol(symbol)) {
-        console.error(`Invalid symbol ${symbol}. Valid symbols are ${data.getSymbols()}`)
-        return
-      }
-
-      board[index] = data.getSymbolValue(symbol)
-    },
-
-    /**
-     * clear board
-     */
-    clear: () => { board = Array(dimension * dimension).fill(' ') },
-
-    /**
-     * Print the board on console
-     */
-    print: () => {
-      if (isBoardEmty()) {
-        console.error(`Empty borad ${board}. Initialize board first.`)
-        return
-      }
-
-      const getEmptyRow = (nCells, cellLayout, rowLayout) => {
-        if (nCells === 0) return rowLayout
-        return getEmptyRow(nCells - 1, cellLayout, rowLayout + cellLayout)
-      }
-
-      for (let index = 0; index < dimension; index++) {
-        console.log(` ${getRow(index).reduce((accum, value) => `${accum} | ${value}`)}`)
-
-        if (index < dimension - 1) {
-          const emptyRow = getEmptyRow(dimension, '---|', '')
-          console.log(emptyRow.substring(0, emptyRow.length - 1))
-        }
-      }
-      console.log('')
+    if (rules.isWin(getValues, index, symbol)) {
+      console.log(`${symbol} won the game`)
+    } else if (rules.isTie(getValues, index, symbol)) {
+      console.log('Its a tie')
     }
   }
+
+  const clear = () => { board.forEach((arr) => arr.fill(0, 0)) }
+
+  const print = () => {
+    if (isBoardEmty()) {
+      console.error(`Empty borad ${board}. Initialize board first.`)
+      return
+    }
+
+    const getEmptyRow = (nCells, cellLayout, rowLayout) => {
+      if (nCells === 0) return rowLayout
+      return getEmptyRow(nCells - 1, cellLayout, rowLayout + cellLayout)
+    }
+
+    const dimension = 3
+    for (let index = 0; index < dimension; index++) {
+      console.log(` ${board[index].reduce((accum, value) => `${accum} | ${value}`)}`)
+
+      if (index < dimension - 1) {
+        const emptyRow = getEmptyRow(dimension, '---|', '')
+        console.log(emptyRow.substring(0, emptyRow.length - 1))
+      }
+    }
+    console.log('')
+  }
+
+  return { makeMove, clear, print }
 }

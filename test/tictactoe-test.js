@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 const Board = require('../board')
-const Data = require('../tick-tac-toe/data')
+const Symbols = require('../tick-tac-toe/symbols')
+const Rules = require('../tick-tac-toe/rules')
 
 describe('NewTicTacToe', () => {
   context('(InitializeBoard)', () => {
     it('PrintBoard', () => {
-      const dim = 6
-      const board = Board.board(dim, Data.data(), null)
-      for (let i = 0; i < dim * dim; ++i) board.makeMove(i, 'X')
+      const board = Board.board(Symbols.symbols, Rules.rules)
+      board.makeMove(6, 'X')
       board.print()
     })
   })
