@@ -10,6 +10,8 @@ exports.rules = ((symbols) => {
   // cell index to triplets index mapping
   const cellAdjacencyList = [[0, 3, 6], [0, 4], [0, 5, 7], [1, 3], [1, 4, 6, 7], [1, 5], [2, 3], [2, 4], [2, 5, 6]]
 
+  const isValidBoard = (width, height) => width === height
+
   // public api's
   const isValidMove = (value) => value === 0
 
@@ -26,5 +28,5 @@ exports.rules = ((symbols) => {
     return emptyCellRow.filter((val) => val === true).length === 0
   }
 
-  return { isValidMove, isWin, isTie }
+  return { isValidBoard, isValidMove, isWin, isTie }
 })(require('../tick-tac-toe/symbols').symbols)

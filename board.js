@@ -1,13 +1,24 @@
-exports.board = (symbols, rules) => {
-  const board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+exports.board = (width, height, symbols, rules) => {
+  const board = [];
+  (() => {
+    if (!rules.isValidBoard(width, height)) {
+      console.error(`Board dimensions ${width}, ${height} are not correct`)
+      return
+    }
+
+    for (let h = 0; h < height; ++h) {
+      const arr = new Array(width)
+      board.push(arr.fill(0, 0))
+    }
+  })()
 
   const isBoardEmty = () => board.length === 0
 
-  const IsValidCell = cellIndex => cellIndex >= 0 && cellIndex <= 8
+  const IsValidCell = cellIndex => cellIndex >= 0 && cellIndex < width * height
 
-  const getRowIndex = (cellIndex) => parseInt(cellIndex / 3, 10)
+  const getRowIndex = (cellIndex) => parseInt(cellIndex / width, 10)
 
-  const getColIndex = (cellIndex) => cellIndex % 3
+  const getColIndex = (cellIndex) => cellIndex % width
 
   const get = (cellIndex) => board[getRowIndex(cellIndex)][getColIndex(cellIndex)]
 
@@ -20,7 +31,7 @@ exports.board = (symbols, rules) => {
     }
 
     if (!IsValidCell(index)) {
-      console.error(`Invalid cell index ${index}. Cell should be in range 0 to 8`)
+      console.error(`Invalid cell index ${index}. Cell should be in range [0, ${width * height - 1}]`)
       return
     }
 
@@ -59,12 +70,11 @@ exports.board = (symbols, rules) => {
       return getEmptyRow(nCells - 1, cellLayout, rowLayout + cellLayout)
     }
 
-    const dimension = 3
-    for (let index = 0; index < dimension; index++) {
+    for (let index = 0; index < height; index++) {
       console.log(` ${board[index].reduce((accum, value) => `${accum} | ${value}`)}`)
 
-      if (index < dimension - 1) {
-        const emptyRow = getEmptyRow(dimension, '---|', '')
+      if (index < width - 1) {
+        const emptyRow = getEmptyRow(width, '---|', '')
         console.log(emptyRow.substring(0, emptyRow.length - 1))
       }
     }
