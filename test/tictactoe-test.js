@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const Board = require('../board')
+const Board = require('../tick-tac-toe/board')
 const Symbols = require('../tick-tac-toe/symbols')
 const Rules = require('../tick-tac-toe/rules')
 

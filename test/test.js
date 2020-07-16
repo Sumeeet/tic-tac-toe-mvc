@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const assert = require('assert')
-const Model = require('../model')
+const Model = require('../tick-tac-toe/model')
 
 describe('TicTacToe', () => {
   context('(InitializeBoard)', () => {

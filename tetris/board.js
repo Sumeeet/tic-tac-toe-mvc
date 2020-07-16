@@ -73,7 +73,7 @@ exports.board = (width, height, symbols, rules) => {
     for (let index = 0; index < height; index++) {
       console.log(` ${board[index].reduce((accum, value) => `${accum} | ${value}`)}`)
 
-      if (index < width - 1) {
+      if (index < height - 1) {
         const emptyRow = getEmptyRow(width, '---|', '')
         console.log(emptyRow.substring(0, emptyRow.length - 1))
       }
