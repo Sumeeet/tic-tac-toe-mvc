@@ -25,6 +25,8 @@ exports.symbols = (() => {
   const getSymbolValue = (symbol) => symbolMap[symbol]
 
   const flip = matrix => {
+    // ToDo: Better way to flip rows, return not needed as
+    // matrix is mutated
     let end = matrix.length - 1
     let start = 0
     while (start <= end) {
@@ -34,16 +36,12 @@ exports.symbols = (() => {
       ++start
       --end
     }
+    return matrix
   }
 
-  const rotate90 = (matrix, clockWise = true) => {
-    if (clockWise) return rotate(matrix).map(row => row.reverse())
-    else {
-      const rMatrix = rotate(matrix)
-      flip(rMatrix)
-      return rMatrix
-    }
-  }
+  const rotate90ClockWise = (matrix) => rotate(matrix).map(row => row.reverse())
 
-  return { isSymbol, toString, getSymbolValue, rotate90 }
+  const rotate90AntiClockWise = (matrix) => flip(rotate(matrix))
+
+  return { isSymbol, toString, getSymbolValue, rotate90ClockWise, rotate90AntiClockWise }
 })()
