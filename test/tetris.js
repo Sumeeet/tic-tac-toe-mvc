@@ -1,18 +1,21 @@
-/* eslint-disable no-undef */
-const Board = require('../tick-tac-toe/board')
+const assert = require('assert')/* eslint-disable no-undef */
+// const Board = require('../tick-tac-toe/board')
 const Symbols = require('../tetris/symbols')
-const Rules = require('../tetris/rules')
+// const Rules = require('../tetris/rules')
 
 describe('Tetris', () => {
-  context('(InitializeBoard)', () => {
-    it('PrintBoard', () => {
+  context('(Symbols)', () => {
+    const symb = Symbols.symbols
+    it('RotateSymbol', () => {
       // const board = Board.board(10, 20, Symbols.symbols, Rules.rules)
-      const matrix = Symbols.symbols.getSymbolValue('L')
-      console.log(`L Matrix ${matrix}`)
-      const ckMatrix = Symbols.symbols.rotate90ClockWise(matrix)
-      console.log(`L Matrix rotate 90 clock-wise ${ckMatrix}`)
-      const ackMatrix = Symbols.symbols.rotate90AntiClockWise(ckMatrix)
-      console.log(`L Matrix rotate 90 anti clock-wise ${ackMatrix}`)
+      function rotateSymbols (symbol, rotate) {
+        const orgMatrix = symb.getSymbolValue(symbol)
+        const rotMatrix = rotate(orgMatrix, 4)
+        assert.deepEqual(orgMatrix, rotMatrix)
+      }
+
+      ['L', 'J', 'T', 'I', 'O', 'Z', 'S'].forEach(s => rotateSymbols(s, (matrix, nTimes) => symb.rotate90ClockWise(matrix, nTimes)));
+      ['L', 'J', 'T', 'I', 'O', 'Z', 'S'].forEach(s => rotateSymbols(s, (matrix, nTimes) => symb.rotate90AntiClockWise(matrix, nTimes)))
     })
   })
 })
