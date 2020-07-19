@@ -14,8 +14,6 @@ exports.board = (width, height, symbols, rules) => {
 
   const isBoardEmty = () => board.length === 0
 
-  const IsValidCell = cellIndex => cellIndex >= 0 && cellIndex < width * height
-
   const getRowIndex = (cellIndex) => parseInt(cellIndex / width, 10)
 
   const getColIndex = (cellIndex) => cellIndex % width
@@ -30,11 +28,12 @@ exports.board = (width, height, symbols, rules) => {
       return
     }
 
+    /*
     if (!IsValidCell(index)) {
       console.error(`Invalid cell index ${index}. Cell should be in range [0, ${width * height - 1}]`)
       return
     }
-
+    */
     if (!symbols.isSymbol(symbol)) {
       console.error(`Invalid symbol ${symbol}. Valid symbols are ${symbols.toString()}`)
       return
@@ -47,14 +46,6 @@ exports.board = (width, height, symbols, rules) => {
 
     // all ok, set symbol in grid
     set(index, symbols.getSymbolValue(symbol))
-
-    const getValues = (indexes) => indexes.map((index) => get(index))
-
-    if (rules.isWin(getValues, index, symbol)) {
-      console.log(`${symbol} won the game`)
-    } else if (rules.isTie(getValues, index, symbol)) {
-      console.log('Its a tie')
-    }
   }
 
   const clear = () => { board.forEach((arr) => arr.fill(0, 0)) }

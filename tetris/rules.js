@@ -2,15 +2,9 @@ exports.rules = ((symbols) => {
   const isValidBoard = (width, height) => width !== height
 
   // public api's
+  // const IsValidCell = cellIndex => cellIndex >= 0 && cellIndex < width * height
+
   const isValidMove = (value) => value === 0
 
-  const isWin = (getValues, index) => {
-    return false
-  }
-
-  const isTie = (getValues, board, symbols) => {
-    return false
-  }
-
-  return { isValidBoard, isValidMove, isWin, isTie }
+  return { isValidBoard, isValidMove }
 })(require('../tetris/symbols').symbols)
