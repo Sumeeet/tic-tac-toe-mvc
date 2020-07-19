@@ -53,10 +53,9 @@ exports.symbols = (() => {
 
   const getSymbolValue = (symbol) => symbolMap[symbol]
 
-  const getBoundedSymbolValue = (symbol) => {
-    const symbolValue = symbolMap[symbol]
+  const getBoundedSymbolValue = (matrix) => {
     let rMin = 3, rMax = 0, cMin = 3, cMax = 0, index = 0
-    symbolValue.forEach(row => {
+    matrix.forEach(row => {
       if (!isEmpty(row)) {
         rMin = Math.min(rMin, index)
         rMax = Math.max(rMax, index)
@@ -67,15 +66,15 @@ exports.symbols = (() => {
       ++index
     })
 
-    const boundedSymbol = []
+    const boundedSymbols = []
     for (let ri = rMin; ri <= rMax; ++ri) {
       const row = []
       for (let ci = cMin; ci <= cMax; ++ci) {
-        row.push(symbolValue[ri][ci])
+        row.push(matrix[ri][ci])
       }
-      boundedSymbol.push(row)
+      boundedSymbols.push(row)
     }
-    return boundedSymbol
+    return boundedSymbols
   }
 
   const rotate90ClockWise = (matrix, nTimes = 1) => rotate90ClockWiseAux(matrix, nTimes)
