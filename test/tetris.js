@@ -67,10 +67,17 @@ describe('Tetris', () => {
   })
 
   context(('Board'), () => {
-    it('InitializeBoard', () => {
-      // const board = Board.board(10, 20, symb, Rules.rules)
-      // board.makeMove(0, 'a')
-      // board.print()
+    const symb = Symbols.symbols
+
+    // cons getBoundedSymbol = (symbol, matrix) => matrix.map(row => row.map(e => e === 0 ? 0: symbol))
+
+    it('setSymbol', () => {
+      const board = Board.board(10, 20, symb, Rules.rules)
+      board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('L')))
+      board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('S')))
+      board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('S')))
+      board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('I')))
+      board.print()
     })
   })
 })

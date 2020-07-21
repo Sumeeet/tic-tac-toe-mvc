@@ -12,40 +12,50 @@ exports.board = (width, height, symbols, rules) => {
     }
   })()
 
+  // blocks are placed bottom up.
+  let currentRow = board.length
+
   const isBoardEmty = () => board.length === 0
 
-  const getRowIndex = (cellIndex) => parseInt(cellIndex / width, 10)
-
-  const getColIndex = (cellIndex) => cellIndex % width
-
-  const get = (cellIndex) => board[getRowIndex(cellIndex)][getColIndex(cellIndex)]
-
-  const set = (cellIndex, symbol) => { board[getRowIndex(cellIndex)][getColIndex(cellIndex)] = symbol }
-
-  const makeMove = (index, symbol) => {
+  const makeMove = (col, symbolMatrix) => {
     if (isBoardEmty()) {
       console.error(`Empty borad ${board}. Initialize board first.`)
       return
     }
 
-    /*
-    if (!IsValidCell(index)) {
-      console.error(`Invalid cell index ${index}. Cell should be in range [0, ${width * height - 1}]`)
-      return
-    }
-    */
-    if (!symbols.isSymbol(symbol)) {
-      console.error(`Invalid symbol ${symbol}. Valid symbols are ${symbols.toString()}`)
+    if (currentRow < 0) {
+      console.error(`Board is full ${print()}. Initialize board first.`)
       return
     }
 
-    if (!rules.isValidMove(get(index))) {
-      console.error(`Invalid move at ${index}`)
+    const symbWidth = symbolMatrix[0].length
+    if (col + symbWidth > board[0].length) {
+      console.error(`Block crosses the board boundary. Valid limits are from 0, ${board[0].length - 1}`)
       return
     }
+    const symbHeight = symbolMatrix.length
+    let startRow = currentRow - symbHeight
+    const getBoardMatrix = (start, current) => board.slice(start, current).map(row => row.slice(col, symbWidth))
+    let boardMatrix = getBoardMatrix(startRow, currentRow)
+    if (!rules.isValidMove(symbolMatrix, boardMatrix)) {
+      --startRow
+      --currentRow
+    }
 
-    // all ok, set symbol in grid
-    set(index, symbols.getSymbolValue(symbol))
+    const addRows = (row1, row2) => {
+      const row = []
+      for (let index = 0; index < row1.length; ++index) {
+        row.push(row1[index] + row2[index])
+      }
+      return row
+    }
+
+    boardMatrix = getBoardMatrix(startRow, currentRow)
+    for (let rowIndex = startRow, sIndex = 0; rowIndex < currentRow; ++rowIndex, ++sIndex) {
+      board[rowIndex].splice(col, symbWidth, ...addRows(symbolMatrix[sIndex], boardMatrix[sIndex]))
+    }
+
+    currentRow -= symbHeight - 1
   }
 
   const clear = () => { board.forEach((arr) => arr.fill(0, 0)) }
