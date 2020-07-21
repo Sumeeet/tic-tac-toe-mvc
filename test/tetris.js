@@ -71,7 +71,7 @@ describe('Tetris', () => {
 
     // cons getBoundedSymbol = (symbol, matrix) => matrix.map(row => row.map(e => e === 0 ? 0: symbol))
 
-    it('setSymbol', () => {
+    it('fillRandomSymbol', () => {
       const board = Board.board(10, 20, symb, Rules.rules)
       board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('L')))
       board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('S')))
@@ -80,6 +80,18 @@ describe('Tetris', () => {
       board.makeMove(8, symb.getBoundedSymbolValue(symb.getSymbolValue('O')))
       board.makeMove(8, symb.getBoundedSymbolValue(symb.getSymbolValue('O')))
       board.makeMove(0, symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue('L'), 2)))
+      board.print()
+    })
+
+    it('fillBoard', () => {
+      const board = Board.board(10, 20, symb, Rules.rules)
+      let rows = 20
+      while (rows > 0) {
+        board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('I')))
+        board.makeMove(4, symb.getBoundedSymbolValue(symb.getSymbolValue('I')))
+        board.makeMove(8, symb.getBoundedSymbolValue(symb.getSymbolValue('O')))
+        --rows
+      }
       board.print()
     })
   })

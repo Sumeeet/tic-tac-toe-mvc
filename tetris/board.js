@@ -22,8 +22,6 @@ exports.board = (width, height, symbols, rules) => {
 
     const symbHeight = symbolMatrix.length
     const symbWidth = symbolMatrix[0].length
-    let startRow = 0
-    let endRow = startRow + symbHeight
 
     if (col + symbWidth > board[0].length) {
       console.error(`Block crosses the board boundary. Valid limits are from 0, ${board[0].length - 1}`)
@@ -40,6 +38,8 @@ exports.board = (width, height, symbols, rules) => {
       return row
     }
 
+    let startRow = 0
+    let endRow = startRow + symbHeight
     while (endRow <= board.length) {
       const boardMatrix = getBoardMatrix(startRow, endRow)
       if (!rules.isValidMove(symbolMatrix, boardMatrix)) break
@@ -50,9 +50,13 @@ exports.board = (width, height, symbols, rules) => {
 
     startRow = startRow - 1
     endRow = startRow + symbHeight
-    for (let rowIndex = startRow, sIndex = 0; rowIndex < endRow; ++rowIndex, ++sIndex) {
+    let index = 0
+    let rowIndex = startRow
+    while (rowIndex < endRow && rowIndex >= 0) {
       const boardMatrix = getBoardMatrix(startRow, endRow)
-      board[rowIndex].splice(col, symbWidth, ...addRows(symbolMatrix[sIndex], boardMatrix[sIndex]))
+      board[rowIndex].splice(col, symbWidth, ...addRows(symbolMatrix[index], boardMatrix[index]))
+      ++rowIndex
+      ++index
     }
   }
 
