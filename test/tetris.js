@@ -69,17 +69,37 @@ describe('Tetris', () => {
   context(('Board'), () => {
     const symb = Symbols.symbols
 
-    // cons getBoundedSymbol = (symbol, matrix) => matrix.map(row => row.map(e => e === 0 ? 0: symbol))
-
     it('fillRandomSymbol', () => {
       const board = Board.board(10, 20, symb, Rules.rules)
-      board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('L')))
-      board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('S')))
-      board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('S')))
-      board.makeMove(4, symb.getBoundedSymbolValue(symb.getSymbolValue('I')))
-      board.makeMove(8, symb.getBoundedSymbolValue(symb.getSymbolValue('O')))
-      board.makeMove(8, symb.getBoundedSymbolValue(symb.getSymbolValue('O')))
-      board.makeMove(0, symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue('L'), 2)))
+      let symbols = []
+
+      const getRandomValue = (max, min) => Math.floor(Math.random() * (max - min)) + min
+
+      const getRandomSymbol = () => {
+        if (symbols.length === 0) symbols = [...symb.getSymbols()]
+        const index = getRandomValue(symbols.length, 0)
+        const symbol = symbols[index]
+        symbols.splice(index, 1)
+        return symbol
+      }
+
+      const getRandomCol = (max, min) => {
+        const col = getRandomValue(max, min)
+        return col
+      }
+
+      let loop = 30
+      while (loop-- >= 0) {
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.getSymbolValue(getRandomSymbol())))
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
+
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol(), 2), getRandomCol(10, 0))))
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol(), 3), getRandomCol(10, 0))))
+        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol(), 2), getRandomCol(10, 0))))
+      }
       board.print()
     })
 

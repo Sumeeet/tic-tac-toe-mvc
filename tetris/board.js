@@ -28,9 +28,9 @@ exports.board = (width, height, symbols, rules) => {
       return
     }
 
-    const getBoardMatrix = (start, current) => board.slice(start, current).map(row => row.slice(col, col + symbWidth))
+    const getBoardMatrix = (start, end) => board.slice(start, end).map(row => row.slice(col, col + symbWidth))
 
-    const addRows = (row1, row2) => {
+    const merge = (row1, row2) => {
       const row = []
       for (let index = 0; index < row1.length; ++index) {
         row.push(row1[index] + row2[index])
@@ -42,8 +42,7 @@ exports.board = (width, height, symbols, rules) => {
     let endRow = startRow + symbHeight
     while (endRow <= board.length) {
       const boardMatrix = getBoardMatrix(startRow, endRow)
-      if (!rules.isValidMove(symbolMatrix, boardMatrix)) break
-
+      if (rules.canIntersect(symbolMatrix, boardMatrix)) break
       startRow = startRow + 1
       endRow = startRow + symbHeight
     }
@@ -54,10 +53,17 @@ exports.board = (width, height, symbols, rules) => {
     let rowIndex = startRow
     while (rowIndex < endRow && rowIndex >= 0) {
       const boardMatrix = getBoardMatrix(startRow, endRow)
-      board[rowIndex].splice(col, symbWidth, ...addRows(symbolMatrix[index], boardMatrix[index]))
+      board[rowIndex].splice(col, symbWidth, ...merge(symbolMatrix[index], boardMatrix[index]))
       ++rowIndex
       ++index
     }
+
+    board.map(row => {
+      if (rules.canRowCollapse(row)) {
+        board.splice(board.indexOf(row), 1)
+        board.splice(0, 0, Array(row.length).fill(0))
+      }
+    })
   }
 
   const clear = () => { board.forEach((arr) => arr.fill(0, 0)) }
@@ -74,7 +80,8 @@ exports.board = (width, height, symbols, rules) => {
     }
 
     for (let index = 0; index < height; index++) {
-      console.log(` ${board[index].reduce((accum, value) => `${accum} | ${value}`)}`)
+      const rowSymbols = board[index].map(value => symbols.getSymbol(value))
+      console.log(` ${rowSymbols.reduce((accum, value) => `${accum} | ${value}`)}`)
 
       if (index < height - 1) {
         const emptyRow = getEmptyRow(width, '---|', '')
