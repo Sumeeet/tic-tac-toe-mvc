@@ -18,17 +18,17 @@ describe('Tetris', () => {
     })
 
     it('IsValidSymbol', () => {
-      assert.equal(['l', 'j', 't', 'i'].forEach(s => Symbols.symbols.isSymbol(s)))
+      ['l', 'j', 't', 'i'].forEach(s => assert.equal(symb.isSymbol(s), true))
     })
 
     it('GetBoundedSymbolValue', () => {
       assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('L')), [[0, 0, 1], [1, 1, 1]])
-      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('J')), [[1, 0, 0], [1, 1, 1]])
-      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('T')), [[0, 1, 0], [1, 1, 1]])
-      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('I')), [[1, 1, 1, 1]])
-      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('O')), [[1, 1], [1, 1]])
-      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('S')), [[0, 1, 1], [1, 1, 0]])
-      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('Z')), [[1, 1, 0], [0, 1, 1]])
+      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('J')), [[2, 0, 0], [2, 2, 2]])
+      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('T')), [[0, 7, 0], [7, 7, 7]])
+      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('I')), [[3, 3, 3, 3]])
+      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('O')), [[4, 4], [4, 4]])
+      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('S')), [[0, 5, 5], [5, 5, 0]])
+      assert.deepEqual(symb.getBoundedSymbolValue(symb.getSymbolValue('Z')), [[6, 6, 0], [0, 6, 6]])
 
       const rotMatrix = symb.rotate90ClockWise(symb.getSymbolValue('L'), 2)
       assert.deepEqual(symb.getBoundedSymbolValue(rotMatrix), [[1, 1, 1], [1, 0, 0]])
@@ -42,12 +42,12 @@ describe('Tetris', () => {
 
       const expectedBoundedSymbol = [
         [[1, 1, 1], [1, 0, 0]], /* L rotated CW 2 times */
-        [[1, 1, 1], [0, 0, 1]], /* J rotated CW 2 times */
-        [[1, 1, 1], [0, 1, 0]], /* T rotated CW 2 times */
-        [[1, 1, 1, 1]], /* I rotated CW 2 times */
-        [[1, 1], [1, 1]], /* O rotated CW 2 times */
-        [[1, 1, 0], [0, 1, 1]], /* Z rotated CW 2 times */
-        [[0, 1, 1], [1, 1, 0]] /* S rotated CW 2 times */
+        [[2, 2, 2], [0, 0, 2]], /* J rotated CW 2 times */
+        [[7, 7, 7], [0, 7, 0]], /* T rotated CW 2 times */
+        [[3, 3, 3, 3]], /* I rotated CW 2 times */
+        [[4, 4], [4, 4]], /* O rotated CW 2 times */
+        [[6, 6, 0], [0, 6, 6]], /* Z rotated CW 2 times */
+        [[0, 5, 5], [5, 5, 0]] /* S rotated CW 2 times */
       ]
 
       const deepEqual = (actual, expected) => {

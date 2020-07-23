@@ -1,7 +1,7 @@
 /* eslint-disable one-var */
 exports.symbols = (() => {
   const symbols = ['L', 'J', 'T', 'I', 'O', 'Z', 'S']
-  const valueToSymbolsMap = { 1: 'L', 2: 'J', 3: 'I', 4: 'O', 5: 'S', 6: 'Z', 7: 'T' }
+  const valueToSymbolsMap = { 0: ' ', 1: 'L', 2: 'J', 3: 'I', 4: 'O', 5: 'S', 6: 'Z', 7: 'T' }
 
   const symbolMap = {
     L: [[0, 0, 0, 1], [0, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
@@ -49,7 +49,7 @@ exports.symbols = (() => {
   }
 
   // public api's
-  const getSymbol = symbolValue => symbolValue !== 0 ? valueToSymbolsMap[symbolValue] : ' '
+  const getSymbol = symbolValue => valueToSymbolsMap[symbolValue]
 
   const getSymbols = () => symbols
 
