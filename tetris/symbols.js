@@ -16,7 +16,7 @@ exports.symbols = (() => {
   }
 
   const rotate = (matrix) => {
-    const map = (index, row, matrix) => row.map((element) => matrix[index++].push(element))
+    const map = (index, row, matrix) => row.map((cell) => matrix[index++].push(cell))
     const copy = matrix.map(row => [])
     matrix.map(row => map(0, row, copy))
     return copy

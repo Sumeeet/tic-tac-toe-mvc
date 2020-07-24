@@ -70,7 +70,7 @@ describe('Tetris', () => {
     const symb = Symbols.symbols
 
     it('fillRandomSymbol', () => {
-      const board = Board.board(10, 20, symb, Rules.rules)
+      const board = Board.board(10, 21, 1, symb, Rules.rules)
       let symbols = []
 
       const getRandomValue = (max, min) => Math.floor(Math.random() * (max - min)) + min
@@ -88,17 +88,8 @@ describe('Tetris', () => {
         return col
       }
 
-      let loop = 30
-      while (loop-- >= 0) {
+      while (!board.isBoardFull()) {
         board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.getSymbolValue(getRandomSymbol())))
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
-
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol(), 2), getRandomCol(10, 0))))
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol()), getRandomCol(10, 0))))
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol(), 3), getRandomCol(10, 0))))
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(symb.rotate90ClockWise(symb.getSymbolValue(getRandomSymbol(), 2), getRandomCol(10, 0))))
       }
       board.print()
     })

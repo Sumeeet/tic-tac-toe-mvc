@@ -1,4 +1,4 @@
-exports.board = (width, height, symbols, rules) => {
+exports.board = (width, height, offset, symbols, rules) => {
   const board = [];
   (() => {
     if (!rules.isValidBoard(width, height)) {
@@ -13,8 +13,8 @@ exports.board = (width, height, symbols, rules) => {
   })()
 
   const withinBoardBounds = (column, symbolMatrix) => {
-    const boardRightEdge = board[0].length - 1
     const boardLeftEdge = 0
+    const boardRightEdge = width - 1
     const symbolWidth = symbolMatrix[0].length
     column = Math.max(boardLeftEdge, column)
     column = Math.min(column, boardRightEdge)
@@ -34,42 +34,7 @@ exports.board = (width, height, symbols, rules) => {
     return row
   }
 
-  // public api's
-  const isBoardEmty = () => board.length === 0
-
-  const makeMove = (column, symbolMatrix) => {
-    if (isBoardEmty()) {
-      console.error(`Empty borad ${board}. Initialize board first.`)
-      return
-    }
-
-    const boundedColumn = withinBoardBounds(column, symbolMatrix)
-
-    const symbHeight = symbolMatrix.length
-    const symbWidth = symbolMatrix[0].length
-
-    const getBoardMatrix = (startRow, endRow) => board.slice(startRow, endRow).map(row => row.slice(boundedColumn, boundedColumn + symbWidth))
-
-    let startRow = 0
-    let endRow = startRow + symbHeight
-    while (endRow <= board.length) {
-      const boardMatrix = getBoardMatrix(startRow, endRow)
-      if (rules.canIntersect(symbolMatrix, boardMatrix)) break
-      startRow = startRow + 1
-      endRow = startRow + symbHeight
-    }
-
-    startRow = startRow - 1
-    endRow = startRow + symbHeight
-    let index = 0
-    let rowIndex = startRow
-    while (rowIndex < endRow && rowIndex >= 0) {
-      const boardMatrix = getBoardMatrix(startRow, endRow)
-      board[rowIndex].splice(boundedColumn, symbWidth, ...merge(symbolMatrix[index], boardMatrix[index]))
-      ++rowIndex
-      ++index
-    }
-
+  const collapseRow = () => {
     board.map(row => {
       if (rules.canRowCollapse(row)) {
         board.splice(board.indexOf(row), 1)
@@ -78,11 +43,57 @@ exports.board = (width, height, symbols, rules) => {
     })
   }
 
-  const clear = () => { board.forEach((arr) => arr.fill(0, 0)) }
+  // public api's
+  const isBoardEmty = () => board.length === 0
+
+  const isBoardFull = () => board[offset].some(cell => cell !== 0)
+
+  const makeMove = (column, symbolMatrix) => {
+    if (isBoardEmty()) {
+      console.error(`Empty board ${board}. Initialize board first.`)
+      return false
+    }
+
+    if (isBoardFull()) {
+      console.error('Board is full. Reset the board.')
+      print()
+      return false
+    }
+
+    const boundedColumn = withinBoardBounds(column, symbolMatrix)
+
+    const symbHeight = symbolMatrix.length
+    const symbWidth = symbolMatrix[0].length
+
+    let startRow = offset
+    let endRow = startRow + symbHeight
+    while (endRow <= board.length) {
+      const boardMatrix = board.slice(startRow, endRow).map(row => row.slice(boundedColumn, boundedColumn + symbWidth))
+      if (rules.canIntersect(symbolMatrix, boardMatrix)) break
+      startRow = startRow + 1
+      endRow = startRow + symbHeight
+    }
+
+    // update board
+    startRow = startRow - 1
+    endRow = startRow + symbHeight - 1
+    let index = symbHeight - 1
+    const boardMatrix = board.slice(startRow, endRow + 1).map(row => row.slice(boundedColumn, boundedColumn + symbWidth))
+    while (endRow >= startRow) {
+      board[endRow].splice(boundedColumn, symbWidth, ...merge(symbolMatrix[index], boardMatrix[index]))
+      --endRow
+      --index
+    }
+
+    collapseRow()
+    return true
+  }
+
+  const clear = () => { board.forEach((row) => row.fill(0, 0)) }
 
   const print = () => {
     if (isBoardEmty()) {
-      console.error(`Empty borad ${board}. Initialize board first.`)
+      console.error(`Empty board ${board}. Initialize board first.`)
       return
     }
 
@@ -91,9 +102,12 @@ exports.board = (width, height, symbols, rules) => {
       return getEmptyRow(nCells - 1, cellLayout, rowLayout + cellLayout)
     }
 
-    for (let index = 0; index < height; index++) {
+    const row = [...board[0].keys()].map(cell => cell + 1)
+    console.log(` ${row.reduce((accum, value) => `${accum}   ${value}`)}`)
+
+    for (let index = offset; index < height; index++) {
       const rowSymbols = board[index].map(value => symbols.getSymbol(value))
-      console.log(` ${rowSymbols.reduce((accum, value) => `${accum} | ${value}`)}`)
+      console.log(` ${rowSymbols.reduce((accum, value) => `${accum} | ${value}`)}   ${index}`)
 
       if (index < height - 1) {
         const emptyRow = getEmptyRow(width, '---|', '')
@@ -103,5 +117,5 @@ exports.board = (width, height, symbols, rules) => {
     console.log('')
   }
 
-  return { makeMove, clear, print }
+  return { makeMove, clear, print, isBoardFull }
 }
