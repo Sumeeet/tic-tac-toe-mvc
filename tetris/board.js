@@ -12,31 +12,43 @@ exports.board = (width, height, symbols, rules) => {
     }
   })()
 
+  const withinBoardBounds = (column, symbolMatrix) => {
+    const boardRightEdge = board[0].length - 1
+    const boardLeftEdge = 0
+    const symbolWidth = symbolMatrix[0].length
+    column = Math.max(boardLeftEdge, column)
+    column = Math.min(column, boardRightEdge)
+
+    if (column + symbolWidth > boardRightEdge) {
+      // bring column within limits
+      column -= boardRightEdge - symbolWidth
+    }
+    return column
+  }
+
+  const merge = (row1, row2) => {
+    const row = []
+    for (let index = 0; index < row1.length; ++index) {
+      row.push(row1[index] + row2[index])
+    }
+    return row
+  }
+
+  // public api's
   const isBoardEmty = () => board.length === 0
 
-  const makeMove = (col, symbolMatrix) => {
+  const makeMove = (column, symbolMatrix) => {
     if (isBoardEmty()) {
       console.error(`Empty borad ${board}. Initialize board first.`)
       return
     }
 
+    const boundedColumn = withinBoardBounds(column, symbolMatrix)
+
     const symbHeight = symbolMatrix.length
     const symbWidth = symbolMatrix[0].length
 
-    if (col + symbWidth > board[0].length) {
-      console.error(`Block crosses the board boundary. Valid limits are from 0, ${board[0].length - 1}`)
-      return
-    }
-
-    const getBoardMatrix = (start, end) => board.slice(start, end).map(row => row.slice(col, col + symbWidth))
-
-    const merge = (row1, row2) => {
-      const row = []
-      for (let index = 0; index < row1.length; ++index) {
-        row.push(row1[index] + row2[index])
-      }
-      return row
-    }
+    const getBoardMatrix = (startRow, endRow) => board.slice(startRow, endRow).map(row => row.slice(boundedColumn, boundedColumn + symbWidth))
 
     let startRow = 0
     let endRow = startRow + symbHeight
@@ -53,7 +65,7 @@ exports.board = (width, height, symbols, rules) => {
     let rowIndex = startRow
     while (rowIndex < endRow && rowIndex >= 0) {
       const boardMatrix = getBoardMatrix(startRow, endRow)
-      board[rowIndex].splice(col, symbWidth, ...merge(symbolMatrix[index], boardMatrix[index]))
+      board[rowIndex].splice(boundedColumn, symbWidth, ...merge(symbolMatrix[index], boardMatrix[index]))
       ++rowIndex
       ++index
     }

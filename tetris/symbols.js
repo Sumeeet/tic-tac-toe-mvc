@@ -1,6 +1,8 @@
 /* eslint-disable one-var */
 exports.symbols = (() => {
   const symbols = ['L', 'J', 'T', 'I', 'O', 'Z', 'S']
+
+  // useful for debugging purpose in console
   const valueToSymbolsMap = { 0: ' ', 1: 'L', 2: 'J', 3: 'I', 4: 'O', 5: 'S', 6: 'Z', 7: 'T' }
 
   const symbolMap = {
