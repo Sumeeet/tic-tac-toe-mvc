@@ -19,9 +19,9 @@ exports.board = (width, height, offset, symbols, rules) => {
     column = Math.max(boardLeftEdge, column)
     column = Math.min(column, boardRightEdge)
 
-    if (column + symbolWidth > boardRightEdge) {
+    if (column + symbolWidth > width) {
       // bring column within limits
-      column -= boardRightEdge - symbolWidth
+      column = width - symbolWidth
     }
     return column
   }
