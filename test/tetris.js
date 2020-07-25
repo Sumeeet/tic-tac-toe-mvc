@@ -95,7 +95,7 @@ describe('Tetris', () => {
     })
 
     it('fillBoard', () => {
-      const board = Board.board(10, 20, symb, Rules.rules)
+      const board = Board.board(10, 21, 1, symb, Rules.rules)
       let rows = 20
       while (rows > 0) {
         board.makeMove(0, symb.getBoundedSymbolValue(symb.getSymbolValue('I')))

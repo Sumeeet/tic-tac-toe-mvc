@@ -15,6 +15,8 @@ exports.symbols = (() => {
     T: [[0, 7, 0, 0], [7, 7, 7, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
   }
 
+  const compose = (a, b) => (value) => b(a(value))
+
   const rotate = (matrix) => {
     const map = (index, row, matrix) => row.map((cell) => matrix[index++].push(cell))
     const copy = matrix.map(row => [])
@@ -24,16 +26,12 @@ exports.symbols = (() => {
 
   const flipVertical = matrix => [matrix[3], matrix[2], matrix[1], matrix[0]]
 
-  const rotate90ClockWiseAux = (matrix, nTimes) => {
-    if (nTimes === 0) return matrix
-    const rotMatrix = rotate(matrix, nTimes).map(row => row.reverse())
-    return rotate90ClockWiseAux(rotMatrix, --nTimes)
-  }
+  const reverse = matrix => matrix.map(row => row.reverse())
 
-  const rotate90AntiClockWiseAux = (matrix, nTimes) => {
+  const rotateAux = (matrix, nTimes, rotate) => {
     if (nTimes === 0) return matrix
-    const rotMatrix = flipVertical(rotate(matrix, nTimes))
-    return rotate90AntiClockWiseAux(rotMatrix, --nTimes)
+    const rotMatrix = rotate(matrix)
+    return rotateAux(rotMatrix, --nTimes, rotate)
   }
 
   const isEmpty = row => row.reduce((accum, value) => accum + value) === 0
@@ -85,9 +83,9 @@ exports.symbols = (() => {
     return boundedSymbols
   }
 
-  const rotate90ClockWise = (matrix, nTimes = 1) => rotate90ClockWiseAux(matrix, nTimes)
+  const rotate90ClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(rotate, reverse))
 
-  const rotate90AntiClockWise = (matrix, nTimes = 1) => rotate90AntiClockWiseAux(matrix, nTimes)
+  const rotate90AntiClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(rotate, flipVertical))
 
   return { isSymbol, toString, getSymbolValue, rotate90ClockWise, rotate90AntiClockWise, getBoundedSymbolValue, getSymbols, getSymbol }
 })()

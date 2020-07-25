@@ -1,28 +1,21 @@
 exports.rules = ((symbols) => {
-  const isValidBoard = (width, height) => width !== height
+  const canCellIntersect = (cell1, cell2) => !(cell1 === 0 || cell2 === 0)
+
+  const canRowIntersect = (row1, row2, index = 0) => {
+    if (index > row1.length - 1) return false
+
+    if (canCellIntersect(row1[index], row2[index])) return true
+    return canRowIntersect(row1, row2, index + 1)
+  }
 
   // public api's
-  // const IsValidCell = cellIndex => cellIndex >= 0 && cellIndex < width * height
+  const isValidBoard = (width, height) => width !== height
 
-  const canIntersect = (symbolMatrix, boardMatrix) => {
-    const symbolSize = symbolMatrix.length * symbolMatrix[0].length
-    const boardSize = boardMatrix.length * boardMatrix[0].length
-    if (symbolSize !== boardSize) return false
+  const canIntersect = (symbolMatrix, boardMatrix, index = 0) => {
+    if (index > symbolMatrix.length - 1) return false
 
-    const isRowIntersect = (row1, row2) => {
-      for (let index = 0; index < row1.length; ++index) {
-        if ((row1[index] === 0 && row2[index] !== 0) ||
-        (row1[index] !== 0 && row2[index] === 0) ||
-        (row1[index] === 0 && row2[index] === 0)) continue
-        else return true
-      }
-      return false
-    }
-
-    for (let index = 0; index < symbolMatrix.length; ++index) {
-      if (isRowIntersect(symbolMatrix[index], boardMatrix[index])) return true
-    }
-    return false
+    if (canRowIntersect(symbolMatrix[index], boardMatrix[index])) return true
+    return canIntersect(symbolMatrix, boardMatrix, index + 1)
   }
 
   const canRowCollapse = row => !row.some(value => value === 0)
