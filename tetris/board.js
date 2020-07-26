@@ -1,4 +1,4 @@
-exports.board = (width, height, offset, symbols, rules) => {
+exports.board = (width, height, symbols, rules, offset = 1) => {
   const board = [];
   (() => {
     if (!rules.isValidBoard(width, height)) {
