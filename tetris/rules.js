@@ -18,7 +18,7 @@ exports.rules = ((symbols) => {
     return canIntersect(symbolMatrix, boardMatrix, index + 1)
   }
 
-  const canRowCollapse = row => !row.some(value => value === 0)
+  const canRowCollapse = row => row.every(value => value > 0)
 
   return { isValidBoard, canIntersect, canRowCollapse }
 })(require('../tetris/symbols').symbols)

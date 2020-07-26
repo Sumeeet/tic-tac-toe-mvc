@@ -17,6 +17,7 @@ exports.symbols = (() => {
 
   const compose = (a, b) => (value) => b(a(value))
 
+  // TODO: improve this code - use transpose
   const rotate = (matrix) => {
     const map = (index, row, matrix) => row.map((cell) => matrix[index++].push(cell))
     const copy = matrix.map(row => [])
@@ -24,7 +25,7 @@ exports.symbols = (() => {
     return copy
   }
 
-  const flipVertical = matrix => [matrix[3], matrix[2], matrix[1], matrix[0]]
+  const flipVertical = matrix => matrix.reverse()
 
   const reverse = matrix => matrix.map(row => row.reverse())
 

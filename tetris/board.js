@@ -1,16 +1,5 @@
 exports.board = (width, height, symbols, rules, offset = 1) => {
-  const board = [];
-  (() => {
-    if (!rules.isValidBoard(width, height)) {
-      console.error(`Board dimensions ${width}, ${height} are not correct`)
-      return
-    }
-
-    for (let h = 0; h < height; ++h) {
-      const arr = new Array(width)
-      board.push(arr.fill(0, 0))
-    }
-  })()
+  const board = Array.from({ length: height }, () => Array(width).fill(0))
 
   const withinBoardBounds = (column, symbolMatrix) => {
     const boardLeftEdge = 0
@@ -38,7 +27,7 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
     board.map(row => {
       if (rules.canRowCollapse(row)) {
         board.splice(board.indexOf(row), 1)
-        board.splice(0, 0, Array(row.length).fill(0))
+        board.unshift(Array(width).fill(0))
       }
     })
   }
@@ -56,7 +45,6 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
 
     if (isBoardFull()) {
       console.error('Board is full. Reset the board.')
-      print()
       return false
     }
 
