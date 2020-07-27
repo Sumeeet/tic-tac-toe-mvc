@@ -34,19 +34,7 @@ exports.symbols = (() => {
     return rotateAux(rotMatrix, --nTimes, rotate)
   }
 
-  const isEmpty = row => row.reduce((accum, value) => accum + value) === 0
-
-  const minMax = row => {
-    let min = 3, max = 0, index = 0
-    row.forEach(e => {
-      if (e !== 0) {
-        min = Math.min(min, index)
-        max = Math.max(max, index)
-      }
-      ++index
-    })
-    return { min: min, max: max }
-  }
+  const getRandomValue = (max, min) => Math.floor(Math.random() * (max - min)) + min
 
   // public api's
   const getSymbol = symbolValue => valueToSymbolsMap[symbolValue]
@@ -59,33 +47,11 @@ exports.symbols = (() => {
 
   const getSymbolValue = (symbol) => symbolMap[symbol]
 
-  const getBoundedSymbolValue = (matrix) => {
-    let rMin = 3, rMax = 0, cMin = 3, cMax = 0, index = 0
-    matrix.forEach(row => {
-      if (!isEmpty(row)) {
-        rMin = Math.min(rMin, index)
-        rMax = Math.max(rMax, index)
-        const range = minMax(row)
-        cMin = Math.min(cMin, range.min)
-        cMax = Math.max(cMax, range.max)
-      }
-      ++index
-    })
-
-    const boundedSymbols = []
-    for (let ri = rMin; ri <= rMax; ++ri) {
-      const row = []
-      for (let ci = cMin; ci <= cMax; ++ci) {
-        row.push(matrix[ri][ci])
-      }
-      boundedSymbols.push(row)
-    }
-    return boundedSymbols
-  }
-
   const rotate90ClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(transpose, reverse))
 
   const rotate90AntiClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(transpose, flipVertical))
 
-  return { isSymbol, toString, getSymbolValue, rotate90ClockWise, rotate90AntiClockWise, getBoundedSymbolValue, getSymbols, getSymbol }
+  const genRandomSymbol = () => symbols[getRandomValue(symbols.length, 0)]
+
+  return { isSymbol, toString, getSymbolValue, rotate90ClockWise, rotate90AntiClockWise, getSymbols, getSymbol, genRandomSymbol }
 })()
