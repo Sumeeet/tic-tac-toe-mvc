@@ -6,23 +6,22 @@ exports.symbols = (() => {
   const valueToSymbolsMap = { 0: ' ', 1: 'L', 2: 'J', 3: 'I', 4: 'O', 5: 'S', 6: 'Z', 7: 'T' }
 
   const symbolMap = {
-    L: [[0, 0, 0, 1], [0, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
-    J: [[0, 0, 0, 0], [2, 0, 0, 0], [2, 2, 2, 0], [0, 0, 0, 0]],
+    L: [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
+    J: [[2, 0, 0], [2, 2, 2], [0, 0, 0]],
     I: [[0, 0, 0, 0], [3, 3, 3, 3], [0, 0, 0, 0], [0, 0, 0, 0]],
-    O: [[0, 0, 0, 0], [0, 4, 4, 0], [0, 4, 4, 0], [0, 0, 0, 0]],
-    S: [[0, 0, 5, 5], [0, 5, 5, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-    Z: [[0, 6, 6, 0], [0, 0, 6, 6], [0, 0, 0, 0], [0, 0, 0, 0]],
-    T: [[0, 7, 0, 0], [7, 7, 7, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+    O: [[4, 4], [4, 4]],
+    S: [[0, 5, 5], [5, 5, 0], [0, 0, 0]],
+    Z: [[6, 6, 0], [0, 6, 6], [0, 0, 0]],
+    T: [[0, 7, 0], [7, 7, 7], [0, 0, 0]]
   }
 
   const compose = (a, b) => (value) => b(a(value))
 
-  // TODO: improve this code - use transpose
-  const rotate = (matrix) => {
-    const map = (index, row, matrix) => row.map((cell) => matrix[index++].push(cell))
-    const copy = matrix.map(row => [])
-    matrix.map(row => map(0, row, copy))
-    return copy
+  const transpose = (matrix) => {
+    const rowToCol = (row, matrix) => row.map((cell, index) => matrix[index].push(cell))
+    const transMatrix = matrix.map(row => [])
+    matrix.map(row => rowToCol(row, transMatrix))
+    return transMatrix
   }
 
   const flipVertical = matrix => matrix.reverse()
@@ -84,9 +83,9 @@ exports.symbols = (() => {
     return boundedSymbols
   }
 
-  const rotate90ClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(rotate, reverse))
+  const rotate90ClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(transpose, reverse))
 
-  const rotate90AntiClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(rotate, flipVertical))
+  const rotate90AntiClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(transpose, flipVertical))
 
   return { isSymbol, toString, getSymbolValue, rotate90ClockWise, rotate90AntiClockWise, getBoundedSymbolValue, getSymbols, getSymbol }
 })()
