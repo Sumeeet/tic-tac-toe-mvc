@@ -15,14 +15,6 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
     return column
   }
 
-  const merge = (row1, row2) => {
-    const row = []
-    for (let index = 0; index < row1.length; ++index) {
-      row.push(row1[index] + row2[index])
-    }
-    return row
-  }
-
   const collapseRow = () => {
     board.map(row => {
       if (rules.canRowCollapse(row)) {
@@ -30,6 +22,14 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
         board.unshift(Array(width).fill(0))
       }
     })
+  }
+
+  const merge = (row1, row2) => {
+    const row = []
+    for (let index = 0; index < row1.length; ++index) {
+      row.push(row1[index] + row2[index])
+    }
+    return row
   }
 
   // public api's
@@ -49,7 +49,7 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
       return false
     }
 
-    const boundedColumn = withinBoardBounds(column, symbolMatrix)
+    column = withinBoardBounds(column, symbolMatrix)
 
     const symbHeight = symbolMatrix.length
     const symbWidth = symbolMatrix[0].length
@@ -57,24 +57,38 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
     // TODO: improve block placement
     let startRow = offset
     let endRow = startRow + symbHeight
-    while (endRow <= board.length) {
-      const boardMatrix = board.slice(startRow, endRow).map(row => row.slice(boundedColumn, boundedColumn + symbWidth))
+    while (endRow <= height) {
+      const boardMatrix = board.slice(startRow, endRow).map(row => row.slice(column, column + symbWidth))
       if (rules.canIntersect(symbolMatrix, boardMatrix)) break
       startRow = startRow + 1
       endRow = startRow + symbHeight
     }
 
+    // eslint-disable-next-line one-var
+    // let validRow = offset, row = offset
+    // while (isValid(row, column, symbolMatrix)) {
+    //   validRow = row
+    //   row = row + 1
+    // }
+
     // update board
+    // symbolMatrix.forEach((row, ri) => {
+    //   row.forEach((value, ci) => {
+    //     if (value > 0) {
+    //       board[validRow + ri][column + ci] = value
+    //     }
+    //   })
+    // })
+
     startRow = startRow - 1
     endRow = startRow + symbHeight - 1
     let index = symbHeight - 1
-    const boardMatrix = board.slice(startRow, endRow + 1).map(row => row.slice(boundedColumn, boundedColumn + symbWidth))
+    const boardMatrix = board.slice(startRow, endRow + 1).map(row => row.slice(column, column + symbWidth))
     while (endRow >= startRow) {
-      board[endRow].splice(boundedColumn, symbWidth, ...merge(symbolMatrix[index], boardMatrix[index]))
+      board[endRow].splice(column, symbWidth, ...merge(symbolMatrix[index], boardMatrix[index]))
       --endRow
       --index
     }
-
     collapseRow()
     return true
   }
@@ -92,10 +106,10 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
       return getEmptyRow(nCells - 1, cellLayout, rowLayout + cellLayout)
     }
 
-    const row = [...board[0].keys()].map(cell => cell + 1)
+    const row = [...board[0].keys()].map(cell => cell)
     console.log(` ${row.reduce((accum, value) => `${accum}   ${value}`)}`)
 
-    for (let index = offset; index < height; index++) {
+    for (let index = 0; index < height; index++) {
       const rowSymbols = board[index].map(value => symbols.getSymbol(value))
       console.log(` ${rowSymbols.reduce((accum, value) => `${accum} | ${value}`)}   ${index}`)
 

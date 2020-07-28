@@ -36,6 +36,8 @@ exports.symbols = (() => {
 
   const getRandomValue = (max, min) => Math.floor(Math.random() * (max - min)) + min
 
+  const rowEmpty = row => row.every(value => value === 0)
+
   // public api's
   const getSymbol = symbolValue => valueToSymbolsMap[symbolValue]
 
@@ -47,11 +49,29 @@ exports.symbols = (() => {
 
   const getSymbolValue = (symbol) => symbolMap[symbol]
 
+  const getBoundedSymbolValue = (matrix) => {
+    const width = matrix[0].length
+    let rowStart = width, colStart = width, rowEnd = 0, colEnd = 0
+    matrix.forEach((row, ri) => {
+      if (!rowEmpty(row)) {
+        rowStart = Math.min(ri, rowStart)
+        rowEnd = Math.max(ri, rowEnd)
+        row.forEach((value, ci) => {
+          if (value !== 0) {
+            colStart = Math.min(ci, colStart)
+            colEnd = Math.max(ci, colEnd)
+          }
+        })
+      }
+    })
+    return matrix.slice(rowStart, rowEnd + 1).map(row => row.slice(colStart, colEnd + 1))
+  }
+
   const rotate90ClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(transpose, reverse))
 
   const rotate90AntiClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(transpose, flipVertical))
 
   const genRandomSymbol = () => symbols[getRandomValue(symbols.length, 0)]
 
-  return { isSymbol, toString, getSymbolValue, rotate90ClockWise, rotate90AntiClockWise, getSymbols, getSymbol, genRandomSymbol }
+  return { isSymbol, toString, getSymbolValue, rotate90ClockWise, rotate90AntiClockWise, getSymbols, getSymbol, genRandomSymbol, getBoundedSymbolValue }
 })()
