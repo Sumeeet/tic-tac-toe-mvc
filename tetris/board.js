@@ -1,4 +1,6 @@
-exports.board = (width, height, symbols, rules, offset = 1) => {
+const Constants = require('../tetris/constants')
+
+exports.board = (width, height, rules, offset = 1) => {
   const board = Array.from({ length: height }, () => Array(width).fill(0))
 
   const withinBoardBounds = (column, symbolMatrix) => {
@@ -58,8 +60,7 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
     let startRow = offset
     let endRow = startRow + symbHeight
     while (endRow <= height) {
-      const boardMatrix = board.slice(startRow, endRow).map(row => row.slice(column, column + symbWidth))
-      if (rules.canIntersect(symbolMatrix, boardMatrix)) break
+      if (!rules.isValidMove(startRow, column, symbolMatrix, board)) break
       startRow = startRow + 1
       endRow = startRow + symbHeight
     }
@@ -110,7 +111,7 @@ exports.board = (width, height, symbols, rules, offset = 1) => {
     console.log(` ${row.reduce((accum, value) => `${accum}   ${value}`)}`)
 
     for (let index = 0; index < height; index++) {
-      const rowSymbols = board[index].map(value => symbols.getSymbol(value))
+      const rowSymbols = board[index].map(value => Constants.VALUE_TO_SYMBOLS_MAP[value])
       console.log(` ${rowSymbols.reduce((accum, value) => `${accum} | ${value}`)}   ${index}`)
 
       if (index < height - 1) {
