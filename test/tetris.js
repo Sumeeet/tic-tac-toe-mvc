@@ -4,6 +4,7 @@ const Board = require('../tetris/board')
 const Symbols = require('../tetris/symbols')
 const Rules = require('../tetris/rules')
 const Constants = require('../tetris/constants')
+const Block = require('../tetris/block')
 
 describe('Tetris', () => {
   context('(Symbols)', () => {
@@ -69,22 +70,24 @@ describe('Tetris', () => {
 
     it('fillRandomSymbol', () => {
       const board = Board.board(10, 21, Rules.rules)
-      let symbols = []
+      // let symbols = []
 
       const getRandomValue = (max, min) => Math.floor(Math.random() * (max - min)) + min
 
-      const getRandomSymbol = () => {
-        if (symbols.length === 0) symbols = [...Constants.SYMBOLS]
-        const index = getRandomValue(symbols.length, 0)
-        const symbol = symbols[index]
-        symbols.splice(index, 1)
-        return symbol
-      }
+      // const getRandomSymbol = () => {
+      //   if (symbols.length === 0) symbols = [...Constants.SYMBOLS]
+      //   const index = getRandomValue(symbols.length, 0)
+      //   const symbol = symbols[index]
+      //   symbols.splice(index, 1)
+      //   return symbol
+      // }
 
       const getRandomCol = (max, min) => getRandomValue(max, min)
 
       while (!board.isBoardFull()) {
-        board.makeMove(getRandomCol(10, 0), symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP[getRandomSymbol()]))
+        const block = Block.block()
+        block.position.column = getRandomCol(10, 0)
+        board.moveBlock(block)
       }
       board.print()
     })
@@ -93,9 +96,9 @@ describe('Tetris', () => {
       const board = Board.board(10, 21, Rules.rules)
       let rows = 20
       while (rows > 0) {
-        board.makeMove(0, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']))
-        board.makeMove(4, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']))
-        board.makeMove(8, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['O']))
+        board.moveBlock(0, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']))
+        board.moveBlock(4, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']))
+        board.moveBlock(8, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['O']))
         --rows
       }
       board.print()
