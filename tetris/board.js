@@ -13,7 +13,7 @@ exports.board = (width, height, rules, offset = 1) => {
     }
   }
 
-  const collapseRow = () => {
+  const collapse = () => {
     board.map(row => {
       if (rules.canRowCollapse(row)) {
         board.splice(board.indexOf(row), 1)
@@ -22,13 +22,13 @@ exports.board = (width, height, rules, offset = 1) => {
     })
   }
 
-  // const merge = (row1, row2) => {
-  //   const row = []
-  //   for (let index = 0; index < row1.length; ++index) {
-  //     row.push(row1[index] + row2[index])
-  //   }
-  //   return row
-  // }
+  const merge = (block) => {
+    block.matrix.forEach((row, ri) => {
+      row.forEach((value, ci) => {
+        board[block.position.row + ri][block.position.column + ci] += block.matrix[ri][ci]
+      })
+    })
+  }
 
   // public api's
   const isBoardEmty = () => board.length === 0
@@ -52,17 +52,11 @@ exports.board = (width, height, rules, offset = 1) => {
     let row = offset
     const symbolHeight = block.size.height
     while (row + symbolHeight <= height && rules.isValidMove(row, block.position.column, block, board)) {
-      block.position.row = row
-      row = row + 1
+      block.position.row = row++
     }
 
-    block.matrix.forEach((srow, ri) => {
-      srow.forEach((value, ci) => {
-        board[block.position.row + ri][block.position.column + ci] += block.matrix[ri][ci]
-      })
-    })
-
-    collapseRow()
+    merge(block)
+    collapse()
     return true
   }
 

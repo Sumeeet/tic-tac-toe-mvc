@@ -66,22 +66,9 @@ describe('Tetris', () => {
   })
 
   context(('Board'), () => {
-    const symb = Symbols.symbols
-
     it('fillRandomSymbol', () => {
       const board = Board.board(10, 21, Rules.rules)
-      // let symbols = []
-
       const getRandomValue = (max, min) => Math.floor(Math.random() * (max - min)) + min
-
-      // const getRandomSymbol = () => {
-      //   if (symbols.length === 0) symbols = [...Constants.SYMBOLS]
-      //   const index = getRandomValue(symbols.length, 0)
-      //   const symbol = symbols[index]
-      //   symbols.splice(index, 1)
-      //   return symbol
-      // }
-
       const getRandomCol = (max, min) => getRandomValue(max, min)
 
       while (!board.isBoardFull()) {
@@ -92,13 +79,21 @@ describe('Tetris', () => {
       board.print()
     })
 
-    it('fillBoard', () => {
+    it('collapseBoardRow', () => {
       const board = Board.board(10, 21, Rules.rules)
       let rows = 20
       while (rows > 0) {
-        board.moveBlock(0, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']))
-        board.moveBlock(4, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']))
-        board.moveBlock(8, symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['O']))
+        let block = Block.block('I')
+        block.position.column = 0
+        board.moveBlock(block)
+
+        block = Block.block('I')
+        block.position.column = 4
+        board.moveBlock(block)
+
+        block = Block.block('O')
+        block.position.column = 8
+        board.moveBlock(block)
         --rows
       }
       board.print()
