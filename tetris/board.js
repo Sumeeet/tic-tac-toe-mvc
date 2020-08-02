@@ -35,7 +35,6 @@ exports.board = (width, height, rules, offset = 1) => {
 
   const isBoardFull = () => board[offset].some(cell => cell !== 0)
 
-  // TODO: use row as parameter too
   const moveBlock = (block) => {
     if (isBoardEmty()) {
       console.error(`Empty board ${board}. Initialize board first.`)
