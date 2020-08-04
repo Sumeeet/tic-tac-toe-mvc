@@ -1,14 +1,13 @@
 /* eslint-disable dot-notation */
 const assert = require('assert')/* eslint-disable no-undef */
 const Board = require('../tetris/board')
-const Symbols = require('../tetris/symbols')
 const Rules = require('../tetris/rules')
 const Constants = require('../tetris/constants')
 const Block = require('../tetris/block')
 
 describe('Tetris', () => {
   context('(Symbols)', () => {
-    const symb = Symbols.symbols
+    const block = Block.block()
     it('RotateSymbol', () => {
       function rotateSymbols (symbol, rotate) {
         const orgMatrix = Constants.SYMBOLS_MAP[symbol]
@@ -16,21 +15,21 @@ describe('Tetris', () => {
         assert.deepEqual(orgMatrix, rotMatrix)
       }
 
-      Constants.SYMBOLS.forEach(s => rotateSymbols(s, (matrix, nTimes) => symb.rotate90ClockWise(matrix, nTimes)))
-      Constants.SYMBOLS.forEach(s => rotateSymbols(s, (matrix, nTimes) => symb.rotate90AntiClockWise(matrix, nTimes)))
+      Constants.SYMBOLS.forEach(s => rotateSymbols(s, (matrix, nTimes) => block.rotate90ClockWise(matrix, nTimes)))
+      Constants.SYMBOLS.forEach(s => rotateSymbols(s, (matrix, nTimes) => block.rotate90AntiClockWise(matrix, nTimes)))
     })
 
     it('GetBoundedSymbolValue', () => {
-      assert.deepEqual(symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['L']), [[0, 0, 1], [1, 1, 1]])
-      assert.deepEqual(symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['J']), [[2, 0, 0], [2, 2, 2]])
-      assert.deepEqual(symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['T']), [[0, 7, 0], [7, 7, 7]])
-      assert.deepEqual(symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']), [[3, 3, 3, 3]])
-      assert.deepEqual(symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['O']), [[4, 4], [4, 4]])
-      assert.deepEqual(symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['S']), [[0, 5, 5], [5, 5, 0]])
-      assert.deepEqual(symb.getBoundedSymbolValue(Constants.SYMBOLS_MAP['Z']), [[6, 6, 0], [0, 6, 6]])
+      assert.deepEqual(block.getBoundedSymbolValue(Constants.SYMBOLS_MAP['L']), [[0, 0, 1], [1, 1, 1]])
+      assert.deepEqual(block.getBoundedSymbolValue(Constants.SYMBOLS_MAP['J']), [[2, 0, 0], [2, 2, 2]])
+      assert.deepEqual(block.getBoundedSymbolValue(Constants.SYMBOLS_MAP['T']), [[0, 7, 0], [7, 7, 7]])
+      assert.deepEqual(block.getBoundedSymbolValue(Constants.SYMBOLS_MAP['I']), [[3, 3, 3, 3]])
+      assert.deepEqual(block.getBoundedSymbolValue(Constants.SYMBOLS_MAP['O']), [[4, 4], [4, 4]])
+      assert.deepEqual(block.getBoundedSymbolValue(Constants.SYMBOLS_MAP['S']), [[0, 5, 5], [5, 5, 0]])
+      assert.deepEqual(block.getBoundedSymbolValue(Constants.SYMBOLS_MAP['Z']), [[6, 6, 0], [0, 6, 6]])
 
-      const rotMatrix = symb.rotate90ClockWise(Constants.SYMBOLS_MAP['L'], 2)
-      assert.deepEqual(symb.getBoundedSymbolValue(rotMatrix), [[1, 1, 1], [1, 0, 0]])
+      const rotMatrix = block.rotate90ClockWise(Constants.SYMBOLS_MAP['L'], 2)
+      assert.deepEqual(block.getBoundedSymbolValue(rotMatrix), [[1, 1, 1], [1, 0, 0]])
     })
 
     it('RotateBoundedSymbol', () => {
@@ -55,12 +54,12 @@ describe('Tetris', () => {
         }
       }
 
-      const rotateSymbCWFunc = (matrix, nTimes) => symb.rotate90ClockWise(matrix, nTimes)
-      const actualCWBoundedSymbols = Constants.SYMBOLS.map(s => rotateSymbols(s, rotateSymbCWFunc)).map(actual => symb.getBoundedSymbolValue(actual))
+      const rotateSymbCWFunc = (matrix, nTimes) => block.rotate90ClockWise(matrix, nTimes)
+      const actualCWBoundedSymbols = Constants.SYMBOLS.map(s => rotateSymbols(s, rotateSymbCWFunc)).map(actual => block.getBoundedSymbolValue(actual))
       deepEqual(actualCWBoundedSymbols, expectedBoundedSymbol)
 
-      const rotateSymbACWFunc = (matrix, nTimes) => symb.rotate90AntiClockWise(matrix, nTimes)
-      const actualACWBoundedSymbols = Constants.SYMBOLS.map(s => rotateSymbols(s, rotateSymbACWFunc)).map(actual => symb.getBoundedSymbolValue(actual))
+      const rotateSymbACWFunc = (matrix, nTimes) => block.rotate90AntiClockWise(matrix, nTimes)
+      const actualACWBoundedSymbols = Constants.SYMBOLS.map(s => rotateSymbols(s, rotateSymbACWFunc)).map(actual => block.getBoundedSymbolValue(actual))
       deepEqual(actualACWBoundedSymbols, expectedBoundedSymbol)
     })
   })
