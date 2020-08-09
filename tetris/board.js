@@ -1,6 +1,9 @@
-const Constants = require('../tetris/constants')
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+// const Constants = require('../tetris/constants')
 
-exports.board = (width, height, rules, offset = 1) => {
+const Board = (width = 10, height = 20, offset = 1) => {
+  let state = BoardSates.Ready
   const board = Array.from({ length: height }, () => Array(width).fill(0))
 
   const keepWithinBoard = (block) => {
@@ -15,7 +18,7 @@ exports.board = (width, height, rules, offset = 1) => {
 
   const collapse = () => {
     board.map(row => {
-      if (rules.canRowCollapse(row)) {
+      if (canRowCollapse(row)) {
         board.splice(board.indexOf(row), 1)
         board.unshift(Array(width).fill(0))
       }
@@ -25,44 +28,63 @@ exports.board = (width, height, rules, offset = 1) => {
   const merge = (block) => {
     block.matrix.forEach((row, ri) => {
       row.forEach((value, ci) => {
-        board[block.position.row + ri][block.position.column + ci] += block.matrix[ri][ci]
+        board[block.position.row + ri][block.position.column + ci] += value
       })
     })
   }
 
+  const isBlockFloat = (block) => block.position.row + block.size.height < height
+
+  const isValidBoard = (width, height) => width !== height
+
+  const isValidMove = (row, column, block) => {
+    return block.matrix.every((srow, ri) => {
+      return srow.every((value, ci) => {
+        return (value === 0 || board[row + ri][column + ci] === 0)
+      })
+    })
+  }
+
+  const canRowCollapse = row => row.every(value => value !== 0)
+
   // public api's
-  const isBoardEmty = () => board.length === 0
+  const isBoardEmpty = () => board.length === 0
 
   const isBoardFull = () => board[offset].some(cell => cell !== 0)
 
   const moveBlock = (block) => {
-    if (isBoardEmty()) {
-      console.error(`Empty board ${board}. Initialize board first.`)
-      return false
-    }
-
     if (isBoardFull()) {
       console.error('Board is full. Reset the board.')
-      return false
+      state = BoardSates.Full
+      return
     }
 
     keepWithinBoard(block)
 
-    let row = offset
-    const symbolHeight = block.size.height
-    while (row + symbolHeight <= height && rules.isValidMove(row, block.position.column, block, board)) {
-      block.position.row = row++
+    const row = block.position.row + offset
+    const column = block.position.column
+    if (isBlockFloat(block) && isValidMove(row, column, block)) {
+      block.position.row = row
+      block.position.column = column
+      state = BoardSates.BlockInMotion
+    } else {
+      merge(block)
+      collapse()
+      state = BoardSates.BlockPlaced
     }
-
-    merge(block)
-    collapse()
-    return true
   }
 
-  const clear = () => { board.forEach((row) => row.fill(0, 0)) }
+  const clear = () => {
+    state = BoardSates.Ready
+    board.forEach((row) => row.fill(0, 0))
+  }
+
+  const getState = () => state
+
+  const setState = (newState) => { state = newState }
 
   const print = () => {
-    if (isBoardEmty()) {
+    if (isBoardEmpty()) {
       console.error(`Empty board ${board}. Initialize board first.`)
       return
     }
@@ -76,7 +98,7 @@ exports.board = (width, height, rules, offset = 1) => {
     console.log(` ${row.reduce((accum, value) => `${accum}   ${value}`)}`)
 
     for (let index = 0; index < height; index++) {
-      const rowSymbols = board[index].map(value => Constants.VALUE_TO_SYMBOLS_MAP[value])
+      const rowSymbols = board[index].map(value => SYMBOLS[value])
       console.log(` ${rowSymbols.reduce((accum, value) => `${accum} | ${value}`)}   ${index}`)
 
       if (index < height - 1) {
@@ -87,5 +109,5 @@ exports.board = (width, height, rules, offset = 1) => {
     console.log('')
   }
 
-  return { moveBlock, clear, print, isBoardFull }
+  return { moveBlock, clear, print, isBoardFull, state, board, getState, setState }
 }

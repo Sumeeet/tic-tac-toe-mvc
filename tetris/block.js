@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 /* eslint-disable one-var */
-const Constants = require('../tetris/constants')
+// const Constants = require('../tetris/constants')
 
-exports.block = (symbol) => {
+const Block = (symbol = null) => {
   let symbols = []
   let matrix = []
   const size = { width: 0, height: 0 }
-  const position = { row: 0, column: 3 }
+  const position = { row: -1, column: 3 }
 
   const getRandom = () => Math.floor(Math.random() * (symbols.length - 1 - 0)) + 0
 
@@ -50,12 +52,12 @@ exports.block = (symbol) => {
 
   (() => {
     if (!symbol) {
-      if (symbols.length === 0) symbols = [...Constants.SYMBOLS]
+      if (symbols.length === 0) symbols = [...SYMBOLS]
       const index = getRandom()
-      matrix = getBoundedSymbolValue(Constants.SYMBOLS_MAP[symbols[index]])
+      matrix = getBoundedSymbolValue(SYMBOLS_MAP[symbols[index]])
       symbols.splice(index, 1)
     } else {
-      matrix = getBoundedSymbolValue(Constants.SYMBOLS_MAP[symbol])
+      matrix = getBoundedSymbolValue(SYMBOLS_MAP[symbol])
     }
     size.width = matrix[0].length
     size.height = matrix.length

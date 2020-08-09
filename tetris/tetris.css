@@ -13,15 +13,15 @@
     margin: 10px;
 }
 
-.board {    
+#board {    
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 1;
     grid-row-end: 2;
 }
 
-.boardcanvas {
-    background-color: cornsilk;
+#boardcanvas {
+    background-color: rgb(177, 186, 196);
     border: 1px solid;
     grid-column-start: 1;
     grid-column-end: 2;
@@ -50,8 +50,8 @@
     justify-content: space-between;
 }
 
-.nextcanvas {
-    background-color: cornsilk;
+#nextcanvas {
+    background-color: rgb(177, 186, 196);
     border: 1px solid;
     margin-top: 10px;
 }
