@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+'use strict'
+
 let context, nextContext // , oldTimeStamp, fps
 const board = Board()
 let block
@@ -25,7 +27,6 @@ const gameLoop = (timestamp) => {
   } else if (state === BoardSates.BlockPlaced) {
     block = Block()
     board.setState(BoardSates.BlockInMotion)
-    board.moveBlock(block)
   }
   // secondsPassed = (timestamp - oldTimeStamp) / 1000
   // oldTimeStamp = timestamp

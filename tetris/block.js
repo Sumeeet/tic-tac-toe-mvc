@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable one-var */
 // const Constants = require('../tetris/constants')
+'use strict'
 
 const Block = (symbol = null) => {
   let symbols = []

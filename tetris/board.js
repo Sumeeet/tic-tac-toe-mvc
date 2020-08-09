@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 // const Constants = require('../tetris/constants')
+'use strict'
 
 const Board = (width = 10, height = 20, offset = 1) => {
   let state = BoardSates.Ready
@@ -28,7 +29,10 @@ const Board = (width = 10, height = 20, offset = 1) => {
   const merge = (block) => {
     block.matrix.forEach((row, ri) => {
       row.forEach((value, ci) => {
-        board[block.position.row + ri][block.position.column + ci] += value
+        const row = block.position.row + ri
+        if (row >= 0) {
+          board[block.position.row + ri][block.position.column + ci] += value
+        }
       })
     })
   }
@@ -50,7 +54,7 @@ const Board = (width = 10, height = 20, offset = 1) => {
   // public api's
   const isBoardEmpty = () => board.length === 0
 
-  const isBoardFull = () => board[offset].some(cell => cell !== 0)
+  const isBoardFull = () => board[0].some(cell => cell !== 0)
 
   const moveBlock = (block) => {
     if (isBoardFull()) {
