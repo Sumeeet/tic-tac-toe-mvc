@@ -1,13 +1,12 @@
 /* eslint-disable dot-notation */
 const assert = require('assert')/* eslint-disable no-undef */
 const Board = require('../tetris/board')
-const Rules = require('../tetris/rules')
 const Constants = require('../tetris/constants')
 const Block = require('../tetris/block')
 
 describe('Tetris', () => {
   context('(Symbols)', () => {
-    const block = Block.block()
+    const block = Block()
     it('RotateSymbol', () => {
       function rotateSymbols (symbol, rotate) {
         const orgMatrix = Constants.SYMBOLS_MAP[symbol]
@@ -15,8 +14,8 @@ describe('Tetris', () => {
         assert.deepEqual(orgMatrix, rotMatrix)
       }
 
-      Constants.SYMBOLS.forEach(s => rotateSymbols(s, (matrix, nTimes) => block.rotate90ClockWise(matrix, nTimes)))
-      Constants.SYMBOLS.forEach(s => rotateSymbols(s, (matrix, nTimes) => block.rotate90AntiClockWise(matrix, nTimes)))
+      Constants.SYMBOLS.slice(1, 8).forEach(s => rotateSymbols(s, (matrix, nTimes) => block.rotate90ClockWise(matrix, nTimes)))
+      Constants.SYMBOLS.slice(1, 8).forEach(s => rotateSymbols(s, (matrix, nTimes) => block.rotate90AntiClockWise(matrix, nTimes)))
     })
 
     it('GetBoundedSymbolValue', () => {
@@ -55,43 +54,50 @@ describe('Tetris', () => {
       }
 
       const rotateSymbCWFunc = (matrix, nTimes) => block.rotate90ClockWise(matrix, nTimes)
-      const actualCWBoundedSymbols = Constants.SYMBOLS.map(s => rotateSymbols(s, rotateSymbCWFunc)).map(actual => block.getBoundedSymbolValue(actual))
+      const actualCWBoundedSymbols = Constants.SYMBOLS.slice(1, 8).map(s => rotateSymbols(s, rotateSymbCWFunc)).map(actual => block.getBoundedSymbolValue(actual))
       deepEqual(actualCWBoundedSymbols, expectedBoundedSymbol)
 
       const rotateSymbACWFunc = (matrix, nTimes) => block.rotate90AntiClockWise(matrix, nTimes)
-      const actualACWBoundedSymbols = Constants.SYMBOLS.map(s => rotateSymbols(s, rotateSymbACWFunc)).map(actual => block.getBoundedSymbolValue(actual))
+      const actualACWBoundedSymbols = Constants.SYMBOLS.slice(1, 8).map(s => rotateSymbols(s, rotateSymbACWFunc)).map(actual => block.getBoundedSymbolValue(actual))
       deepEqual(actualACWBoundedSymbols, expectedBoundedSymbol)
     })
   })
 
   context(('Board'), () => {
     it('fillRandomSymbol', () => {
-      const board = Board.board(10, 21, Rules.rules)
-      const getRandomValue = (max, min) => Math.floor(Math.random() * (max - min)) + min
-      const getRandomCol = (max, min) => getRandomValue(max, min)
+      const board = Board()
+      const getRandomValue = (min, max) => Math.floor(Math.random() * (max - min)) + min
+      const getRandomCol = (min, max) => getRandomValue(min, max)
 
+      let block
       while (!board.isBoardFull()) {
-        const block = Block.block()
-        block.position.column = getRandomCol(10, 0)
-        board.moveBlock(block)
+        const state = board.getState()
+        if (state === Constants.BOARDSTATES.Ready) {
+          block = Block()
+          block.position.column = getRandomCol(0, 10)
+          board.moveBlock(block)
+        } else if (state === Constants.BOARDSTATES.BlockInMotion) {
+          board.moveBlock(block)
+        } else if (state === Constants.BOARDSTATES.BlockPlaced) {
+          block = Block()
+          block.position.column = getRandomCol(0, 10)
+          board.setState(Constants.BOARDSTATES.BlockInMotion)
+        }
       }
       board.print()
     })
 
     it('collapseBoardRow', () => {
-      const board = Board.board(10, 21, Rules.rules)
+      const board = Board()
       let rows = 20
       while (rows > 0) {
-        let block = Block.block('I')
-        block.position.column = 0
+        let block = Block(20, 0, 'I')
         board.moveBlock(block)
 
-        block = Block.block('I')
-        block.position.column = 4
+        block = Block(20, 4, 'I')
         board.moveBlock(block)
 
-        block = Block.block('O')
-        block.position.column = 8
+        block = Block(20, 8, 'O')
         board.moveBlock(block)
         --rows
       }

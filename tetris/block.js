@@ -1,16 +1,17 @@
+'use strict'
+
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable one-var */
-// const Constants = require('../tetris/constants')
-'use strict'
+// const { SYMBOLS_MAP, SYMBOLS } = require('./constants')
 
-const Block = (symbol = null) => {
+const Block = (row = -1, column = 3, symbol = null) => {
   let symbols = []
   let matrix = []
   const size = { width: 0, height: 0 }
-  const position = { row: -1, column: 3 }
+  const position = { row: row, column: column }
 
-  const getRandom = () => Math.floor(Math.random() * (symbols.length - 1 - 0)) + 0
+  const getRandom = (min, max) => Math.floor(Math.random() * (max - 1 - min)) + min
 
   const compose = (a, b) => (value) => b(a(value))
 
@@ -54,7 +55,7 @@ const Block = (symbol = null) => {
   (() => {
     if (!symbol) {
       if (symbols.length === 0) symbols = [...SYMBOLS]
-      const index = getRandom()
+      const index = getRandom(1, symbols.length)
       matrix = getBoundedSymbolValue(SYMBOLS_MAP[symbols[index]])
       symbols.splice(index, 1)
     } else {
@@ -70,3 +71,5 @@ const Block = (symbol = null) => {
 
   return { matrix, size, position, getBoundedSymbolValue, rotate90ClockWise, rotate90AntiClockWise }
 }
+
+// module.exports = Block

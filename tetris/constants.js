@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 'use strict'
 
-const SYMBOLS = ['L', 'J', 'T', 'I', 'O', 'Z', 'S']
+const SYMBOLS = [' ', 'L', 'J', 'T', 'I', 'O', 'Z', 'S']
 
 const SYMBOLS_MAP = {
   L: [[0, 0, 1], [1, 1, 1], [0, 0, 0]],
@@ -15,4 +15,6 @@ const SYMBOLS_MAP = {
 
 const COLORS = ['none', 'cyan', 'blue', 'orange', 'yellow', 'green', 'purple', 'red']
 
-const BoardSates = { Ready: 'BoardReady', Full: 'BoardFull', BlockInMotion: 'BlockInMotion', BlockPlaced: 'BlockPlaced' }
+const BOARDSTATES = { Ready: 'BoardReady', Full: 'BoardFull', BlockInMotion: 'BlockInMotion', BlockPlaced: 'BlockPlaced' }
+
+// module.exports = { SYMBOLS, SYMBOLS_MAP, BOARDSTATES }

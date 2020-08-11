@@ -1,19 +1,27 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-// const Constants = require('../tetris/constants')
 'use strict'
 
+// const { BOARDSTATES, SYMBOLS } = require('./constants')
+
 const Board = (width = 10, height = 20, offset = 1) => {
-  let state = BoardSates.Ready
+  let state = BOARDSTATES.Ready
   const board = Array.from({ length: height }, () => Array(width).fill(0))
 
   const keepWithinBoard = (block) => {
     const boardLeftEdge = 0
     const boardRightEdge = width - 1
     const symbolWidth = block.size.width
-    const column = Math.min(Math.max(boardLeftEdge, block.position.column), boardRightEdge)
-    if (column + symbolWidth > width) {
+    block.position.column = Math.min(Math.max(boardLeftEdge, block.position.column), boardRightEdge)
+    if (block.position.column + symbolWidth > width) {
       block.position.column = width - symbolWidth
+    }
+
+    const boardBottomEdge = height - 1
+    const symbolHeight = block.size.height
+    block.position.row = Math.min(boardBottomEdge, block.position.row)
+    if (block.position.row + symbolHeight > height) {
+      block.position.row = height - symbolHeight
     }
   }
 
@@ -59,7 +67,7 @@ const Board = (width = 10, height = 20, offset = 1) => {
   const moveBlock = (block) => {
     if (isBoardFull()) {
       console.error('Board is full. Reset the board.')
-      state = BoardSates.Full
+      state = BOARDSTATES.Full
       return
     }
 
@@ -70,16 +78,16 @@ const Board = (width = 10, height = 20, offset = 1) => {
     if (isBlockFloat(block) && isValidMove(row, column, block)) {
       block.position.row = row
       block.position.column = column
-      state = BoardSates.BlockInMotion
+      state = BOARDSTATES.BlockInMotion
     } else {
       merge(block)
       collapse()
-      state = BoardSates.BlockPlaced
+      state = BOARDSTATES.BlockPlaced
     }
   }
 
   const clear = () => {
-    state = BoardSates.Ready
+    state = BOARDSTATES.Ready
     board.forEach((row) => row.fill(0, 0))
   }
 
@@ -115,3 +123,5 @@ const Board = (width = 10, height = 20, offset = 1) => {
 
   return { moveBlock, clear, print, isBoardFull, state, board, getState, setState }
 }
+
+// module.exports = Board

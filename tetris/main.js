@@ -19,14 +19,14 @@ window.onload = () => {
 const gameLoop = (timestamp) => {
   if (board.isBoardFull()) return
   const state = board.getState()
-  if (state === BoardSates.Ready) {
+  if (state === BOARDSTATES.Ready) {
     block = Block()
     board.moveBlock(block)
-  } else if (state === BoardSates.BlockInMotion) {
+  } else if (state === BOARDSTATES.BlockInMotion) {
     board.moveBlock(block)
-  } else if (state === BoardSates.BlockPlaced) {
+  } else if (state === BOARDSTATES.BlockPlaced) {
     block = Block()
-    board.setState(BoardSates.BlockInMotion)
+    board.setState(BOARDSTATES.BlockInMotion)
   }
   // secondsPassed = (timestamp - oldTimeStamp) / 1000
   // oldTimeStamp = timestamp
