@@ -95,6 +95,17 @@ const Board = (width = 10, height = 20, offset = 1) => {
 
   const setState = (newState) => { state = newState }
 
+  const drawBoard = (context) => {
+    board.forEach((row, ri) => {
+      row.forEach((value, ci) => {
+        if (value > 0) {
+          context.fillStyle = COLORS[value]
+          context.fillRect(ci, ri, 1, 1)
+        }
+      })
+    })
+  }
+
   const print = () => {
     if (isBoardEmpty()) {
       console.error(`Empty board ${board}. Initialize board first.`)
@@ -121,7 +132,7 @@ const Board = (width = 10, height = 20, offset = 1) => {
     console.log('')
   }
 
-  return { moveBlock, clear, print, isBoardFull, state, board, getState, setState }
+  return { moveBlock, clear, print, isBoardFull, state, board, getState, setState, drawBoard }
 }
 
 // module.exports = Board

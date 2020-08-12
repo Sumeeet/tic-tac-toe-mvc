@@ -32,32 +32,7 @@ const gameLoop = (timestamp) => {
   // oldTimeStamp = timestamp
   // fps = Math.round(1 / secondsPassed)
   context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-  drawBlock(context, block)
-  drawBoard(context, board.board)
+  block.drawBlock(context)
+  board.drawBoard(context)
   window.requestAnimationFrame(gameLoop)
-}
-
-const drawBlock = (context, block) => {
-  // draw block
-  const row = block.position.row
-  const column = block.position.column
-  block.matrix.forEach((srow, ri) => {
-    srow.forEach((value, ci) => {
-      if (value > 0) {
-        context.fillStyle = COLORS[value]
-        context.fillRect(column + ci, row + ri, 1, 1)
-      }
-    })
-  })
-}
-
-const drawBoard = (context, board) => {
-  board.forEach((row, ri) => {
-    row.forEach((value, ci) => {
-      if (value > 0) {
-        context.fillStyle = COLORS[value]
-        context.fillRect(ci, ri, 1, 1)
-      }
-    })
-  })
 }

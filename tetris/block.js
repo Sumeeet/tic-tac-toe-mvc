@@ -9,7 +9,7 @@ const Block = (row = -1, column = 3, symbol = null) => {
   let symbols = []
   let matrix = []
   const size = { width: 0, height: 0 }
-  const position = { row: row, column: column }
+  const position = { row, column }
 
   const getRandom = (min, max) => Math.floor(Math.random() * (max - 1 - min)) + min
 
@@ -69,7 +69,18 @@ const Block = (row = -1, column = 3, symbol = null) => {
 
   const rotate90AntiClockWise = (matrix, nTimes = 1) => rotateAux(matrix, nTimes, compose(transpose, flipVertical))
 
-  return { matrix, size, position, getBoundedSymbolValue, rotate90ClockWise, rotate90AntiClockWise }
+  const drawBlock = (context) => {
+    block.matrix.forEach((row, ri) => {
+      row.forEach((value, ci) => {
+        if (value > 0) {
+          context.fillStyle = COLORS[value]
+          context.fillRect(position.column + ci, position.row + ri, 1, 1)
+        }
+      })
+    })
+  }
+
+  return { matrix, size, position, getBoundedSymbolValue, rotate90ClockWise, rotate90AntiClockWise, drawBlock }
 }
 
 // module.exports = Block
