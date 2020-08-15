@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 'use strict'
 
-let context, nextContext // , oldTimeStamp, fps
+let block, context, nextContext // , oldTimeStamp, fps
+let requestId = null
 const board = Board()
-let block
 
 window.onload = () => {
   // get reference to canvas context
@@ -13,10 +13,32 @@ window.onload = () => {
   const nextcanvas = document.getElementById('nextcanvas')
   nextContext = nextcanvas.getContext('2d')
   nextContext.scale(20, 20)
+  addEventListeners()
+}
+
+const play = (event) => {
   window.requestAnimationFrame(gameLoop)
 }
 
-const gameLoop = (timestamp) => {
+const reset = () => {
+  board.clear()
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+  cancelAnimationFrame(requestId)
+  requestId = null
+}
+
+const pause = () => {
+  cancelAnimationFrame(requestId)
+  requestId = null
+
+  context.fillStyle = 'black'
+  context.fillRect(1, 3, 8, 1.2)
+  context.font = '1px Arial'
+  context.fillStyle = 'yellow'
+  context.fillText('PAUSED', 3, 4)
+}
+
+const gameLoop = (timestamp = 0) => {
   if (board.isBoardFull()) return
   const state = board.getState()
   if (state === BOARDSTATES.Ready) {
@@ -34,5 +56,16 @@ const gameLoop = (timestamp) => {
   context.clearRect(0, 0, context.canvas.width, context.canvas.height)
   block.drawBlock(context)
   board.drawBoard(context)
-  window.requestAnimationFrame(gameLoop)
+  requestId = window.requestAnimationFrame(gameLoop)
+}
+
+const addEventListeners = () => {
+  const playElement = document.getElementById('play')
+  playElement.addEventListener('click', event => { play() })
+
+  const pauseElement = document.getElementById('pause')
+  pauseElement.addEventListener('click', event => { pause() })
+
+  const resetElement = document.getElementById('reset')
+  resetElement.addEventListener('click', event => { reset() })
 }
