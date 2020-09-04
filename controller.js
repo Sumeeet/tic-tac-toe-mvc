@@ -17,3 +17,5 @@ class Controller {
 }
 
 const app = new Controller(new Model(), new View());
+
+console.log('remove this')
