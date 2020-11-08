@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
 'use strict'
 
-let block, context, nextContext // , oldTimeStamp, fps
+let block, context, nextContext, oldTimeStamp, timeElapsed//, fps
+const level = 400
 let requestId = null
 const board = Board()
 
@@ -13,6 +14,7 @@ window.onload = () => {
   const nextcanvas = document.getElementById('nextcanvas')
   nextContext = nextcanvas.getContext('2d')
   nextContext.scale(20, 20)
+  reset()
   addEventListeners()
 }
 
@@ -25,6 +27,7 @@ const reset = () => {
   context.clearRect(0, 0, context.canvas.width, context.canvas.height)
   cancelAnimationFrame(requestId)
   requestId = null
+  oldTimeStamp = performance.now()
 }
 
 const pause = () => {
@@ -39,22 +42,27 @@ const pause = () => {
 }
 
 const gameLoop = (timestamp = 0) => {
-  if (board.isBoardFull()) return
-  const state = board.getState()
-  if (state === BOARDSTATES.Ready) {
-    block = Block()
-    board.moveBlock(block)
-  } else if (state === BOARDSTATES.BlockInMotion) {
-    board.moveBlock(block)
-  } else if (state === BOARDSTATES.BlockPlaced) {
-    block = Block()
-    board.setState(BOARDSTATES.BlockInMotion)
+  timeElapsed = (timestamp - oldTimeStamp)
+
+  if(timeElapsed > level) {
+    oldTimeStamp = timestamp
+    if (board.isBoardFull()) return
+    const state = board.getState()
+    if (state === BOARDSTATES.Ready) {
+      block = Block()
+      board.moveBlock(block)
+    } else if (state === BOARDSTATES.BlockInMotion) {
+      board.moveBlock(block)
+    } else if (state === BOARDSTATES.BlockPlaced) {
+      block = Block()
+      board.setState(BOARDSTATES.BlockInMotion)
+    }
   }
-  // secondsPassed = (timestamp - oldTimeStamp) / 1000
-  // oldTimeStamp = timestamp
-  // fps = Math.round(1 / secondsPassed)
+ 
+  
   context.clearRect(0, 0, context.canvas.width, context.canvas.height)
   block.drawBlock(context)
+
   board.drawBoard(context)
   requestId = window.requestAnimationFrame(gameLoop)
 }
