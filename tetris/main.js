@@ -76,4 +76,34 @@ const addEventListeners = () => {
 
   const resetElement = document.getElementById('reset')
   resetElement.addEventListener('click', event => { reset() })
+
+  document.addEventListener('keydown', handleKeyDownEvents)
+}
+
+const handleKeyDownEvents = (event) => {
+  event.preventDefault();
+  switch (event.code) {
+    case "ArrowDown":
+      if (board.isBlockFloat(block) && board.isValidMove(block.position.row + 1, block.position.column, block)) {
+        block.position.row += 1
+        board.keepWithinBoard(block)
+      }      
+      break
+    case "ArrowLeft":
+      block.position.column -= 1
+      board.keepWithinBoard(block)
+      break
+    case "ArrowRight":
+      block.position.column += 1
+      board.keepWithinBoard(block)
+      break
+    case "ArrowUp":
+      let clone = {...block}
+      clone.symbolMatrix = block.rotate90ClockWise(block.symbolMatrix)
+      clone.matrix = clone.getBoundedSymbolValue(clone.symbolMatrix)
+      clone.updateSize(clone.matrix)
+      block = clone
+      board.keepWithinBoard(block)
+      break
+  }
 }

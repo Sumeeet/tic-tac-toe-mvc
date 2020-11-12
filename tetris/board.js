@@ -51,9 +51,7 @@ const Board = (width = 10, height = 20, offset = 1) => {
 
   const isValidMove = (row, column, block) => {
     return block.matrix.every((srow, ri) => {
-      return srow.every((value, ci) => {
-        return (value === 0 || board[row + ri][column + ci] === 0)
-      })
+      return srow.every((value, ci) => (value === 0 || board[row + ri][column + ci] === 0))
     })
   }
 
@@ -132,7 +130,7 @@ const Board = (width = 10, height = 20, offset = 1) => {
     console.log('')
   }
 
-  return { moveBlock, clear, print, isBoardFull, state, board, getState, setState, drawBoard }
+  return { moveBlock, clear, print, isBoardFull, state, board, getState, setState, drawBoard, keepWithinBoard, isBlockFloat, isValidMove }
 }
 
 // module.exports = Board

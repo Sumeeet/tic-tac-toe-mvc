@@ -60,6 +60,11 @@ p {
     margin-top: 10px;
 }
 
+.toolbar {
+    display: flex;
+    flex-direction: column;
+}
+
 #left {
     grid-column-start: 1;
     grid-column-end: 3;
@@ -86,4 +91,9 @@ p {
     grid-column-end: 4;
     grid-row-start: 5;
     grid-row-end: 7;
+}
+
+#play {
+    background-color: green;
+    font-size: large;
 }
