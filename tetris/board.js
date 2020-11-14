@@ -64,7 +64,6 @@ const Board = (width = 10, height = 20, offset = 1) => {
 
   const moveBlock = (block) => {
     if (isBoardFull()) {
-      console.error('Board is full. Reset the board.')
       state = BOARDSTATES.Full
       return
     }

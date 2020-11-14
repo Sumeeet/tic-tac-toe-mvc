@@ -90,12 +90,16 @@ const handleKeyDownEvents = (event) => {
       }      
       break
     case "ArrowLeft":
-      block.position.column -= 1
-      board.keepWithinBoard(block)
+      if (board.isValidMove(block.position.row, block.position.column - 1, block)) {
+        block.position.column -= 1
+        board.keepWithinBoard(block)
+      }
       break
     case "ArrowRight":
-      block.position.column += 1
-      board.keepWithinBoard(block)
+      if (board.isValidMove(block.position.row, block.position.column + 1, block)) {
+        block.position.column += 1
+        board.keepWithinBoard(block)
+      }
       break
     case "ArrowUp":
       let clone = {...block}
